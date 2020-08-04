@@ -595,22 +595,6 @@ void ResizeSwapChain()
 
 void Present()
 {
-  UINT present_flags = 0;
-
-  // When using sync interval 0, it is recommended to always pass the tearing
-  // flag when it is supported, even when presenting in windowed mode.
-  // However, this flag cannot be used if the app is in fullscreen mode as a
-  // result of calling SetFullscreenState.
-  if (AllowTearingSupported() && !g_ActiveConfig.IsVSync() && !GetFullscreenState())
-    present_flags |= DXGI_PRESENT_ALLOW_TEARING;
-
-  if (swapchain->IsTemporaryMonoSupported() && g_ActiveConfig.stereo_mode != StereoMode::QuadBuffer)
-  {
-    present_flags |= DXGI_PRESENT_STEREO_TEMPORARY_MONO;
-  }
-
-  // TODO: Is 1 the correct value for vsyncing?
-  swapchain->Present(static_cast<UINT>(g_ActiveConfig.IsVSync()), present_flags);
 }
 
 HRESULT SetFullscreenState(bool enable_fullscreen)

@@ -607,8 +607,8 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
   g_texture_cache->OnConfigChanged(g_ActiveConfig);
 
   // Flip/present backbuffer to frontbuffer here
-  if (D3D::swapchain)
-    D3D::Present();
+  //if (D3D::swapchain)
+    //D3D::Present();
 
   // Resize the back buffers NOW to avoid flickering
   if (CalculateTargetSize() || m_last_multisamples != g_ActiveConfig.iMultisamples ||
