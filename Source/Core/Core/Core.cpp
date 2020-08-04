@@ -667,62 +667,6 @@ State GetState()
   return State::Uninitialized;
 }
 
-static std::string GenerateScreenshotFolderPath()
-{
-  const std::string& gameId = SConfig::GetInstance().GetGameID();
-  std::string path = File::GetUserPath(D_SCREENSHOTS_IDX) + gameId + DIR_SEP_CHR;
-
-  if (!File::CreateFullPath(path))
-  {
-    // fallback to old-style screenshots, without folder.
-    path = File::GetUserPath(D_SCREENSHOTS_IDX);
-  }
-
-  return path;
-}
-
-static std::string GenerateScreenshotName()
-{
-  std::string path = GenerateScreenshotFolderPath();
-
-  // append gameId, path only contains the folder here.
-  path += SConfig::GetInstance().GetGameID();
-
-  std::string name;
-  for (int i = 1; File::Exists(name = StringFromFormat("%s-%d.png", path.c_str(), i)); ++i)
-  {
-    // TODO?
-  }
-
-  return name;
-}
-
-void SaveScreenShot(bool wait_for_completion)
-{
-  const bool bPaused = GetState() == State::Paused;
-
-  SetState(State::Paused);
-
-  g_renderer->SaveScreenshot(GenerateScreenshotName(), wait_for_completion);
-
-  if (!bPaused)
-    SetState(State::Running);
-}
-
-void SaveScreenShot(const std::string& name, bool wait_for_completion)
-{
-  const bool bPaused = GetState() == State::Paused;
-
-  SetState(State::Paused);
-
-  std::string filePath = GenerateScreenshotFolderPath() + name + ".png";
-
-  g_renderer->SaveScreenshot(filePath, wait_for_completion);
-
-  if (!bPaused)
-    SetState(State::Running);
-}
-
 void RequestRefreshInfo()
 {
   s_request_refresh_info = true;

@@ -214,22 +214,6 @@ Renderer::ConvertStereoRectangle(const TargetRectangle& rc) const
   return std::make_tuple(left_rc, right_rc);
 }
 
-void Renderer::SaveScreenshot(const std::string& filename, bool wait_for_completion)
-{
-  // We must not hold the lock while waiting for the screenshot to complete.
-  {
-    std::lock_guard<std::mutex> lk(m_screenshot_lock);
-    m_screenshot_name = filename;
-    m_screenshot_request.Set();
-  }
-
-  if (wait_for_completion)
-  {
-    // This is currently only used by Android, and it was using a wait time of 2 seconds.
-    m_screenshot_completed.WaitFor(std::chrono::seconds(2));
-  }
-}
-
 bool Renderer::CheckForHostConfigChanges()
 {
   ShaderHostConfig new_host_config = ShaderHostConfig::GetCurrent();
