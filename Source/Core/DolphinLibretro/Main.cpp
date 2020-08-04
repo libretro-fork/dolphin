@@ -66,9 +66,8 @@ static unsigned int GetSampleRate()
   else if (SConfig::GetInstance().bWii)
     return Options::audioMixerRate;
   else if (Options::audioMixerRate == 32000u)
-    return 32029;
-
-  return 48043;
+    return 32000;
+  return 48000;
 }
 
 class Stream final : public SoundStream
@@ -154,7 +153,7 @@ void retro_get_system_av_info(retro_system_av_info* info)
     Libretro::widescreen = Config::Get(Config::SYSCONF_WIDESCREEN);
 
   info->geometry.aspect_ratio = Libretro::widescreen ? 16.0 / 9.0 : 4.0 / 3.0;
-  info->timing.fps = (retro_get_region() == RETRO_REGION_NTSC) ? (60.0f / 1.001f) : 50.0f;
+  info->timing.fps = (retro_get_region() == RETRO_REGION_NTSC) ? 60.0f : 50.0f;
   info->timing.sample_rate = Libretro::Audio::GetSampleRate();
 }
 
