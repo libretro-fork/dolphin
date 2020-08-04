@@ -470,9 +470,6 @@ endif()
 # Setup include directories (and make sure they are preferred over the Externals)
 #
 include_directories(Source/Core)
-if(ANDROID)
-  include_directories(Source/Android)
-endif()
 
 ########################################
 # Process externals and setup their include directories
