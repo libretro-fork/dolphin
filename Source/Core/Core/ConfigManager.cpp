@@ -161,7 +161,6 @@ void SConfig::SaveDisplaySettings(IniFile& ini)
   display->Set("RenderWindowHeight", iRenderWindowHeight);
   display->Set("RenderWindowAutoSize", bRenderWindowAutoSize);
   display->Set("KeepWindowOnTop", bKeepWindowOnTop);
-  display->Set("DisableScreenSaver", bDisableScreenSaver);
 }
 
 void SConfig::SaveGameListSettings(IniFile& ini)
@@ -418,7 +417,6 @@ void SConfig::LoadDisplaySettings(IniFile& ini)
   display->Get("RenderWindowHeight", &iRenderWindowHeight, 480);
   display->Get("RenderWindowAutoSize", &bRenderWindowAutoSize, false);
   display->Get("KeepWindowOnTop", &bKeepWindowOnTop, false);
-  display->Get("DisableScreenSaver", &bDisableScreenSaver, true);
 }
 
 void SConfig::LoadGameListSettings(IniFile& ini)

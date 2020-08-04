@@ -151,7 +151,6 @@ struct SConfig
   int iRenderWindowHeight = -1;
   bool bRenderWindowAutoSize = false, bKeepWindowOnTop = false;
   bool bFullscreen = false, bRenderToMain = false;
-  bool bDisableScreenSaver = false;
 
   // Bluetooth passthrough mode settings
   bool m_bt_passthrough_enabled = false;

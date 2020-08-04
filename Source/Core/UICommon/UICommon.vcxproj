@@ -58,7 +58,6 @@
     <ClCompile Include="USBUtils.cpp">
       <DisableSpecificWarnings>4200;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Include="VideoUtils.cpp" />
     <ClCompile Include="GameFile.cpp" />
     <ClCompile Include="GameFileCache.cpp" />
   </ItemGroup>
