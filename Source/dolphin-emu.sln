@@ -44,8 +44,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SFML_Network", "..\External
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libusb-1.0", "..\Externals\libusb\libusb_static_2013.vcxproj", "{349EE8F9-7D25-4909-AAF5-FF3FADE72187}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DSPTool", "DSPTool\DSPTool.vcxproj", "{1970D175-3DE8-4738-942A-4D98D1CDBF64}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3D", "Core\VideoBackends\D3D\D3D.vcxproj", "{96020103-4BA5-4FD2-B4AA-5B6D24492D4E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OGL", "Core\VideoBackends\OGL\OGL.vcxproj", "{EC1A314C-5588-4506-9C1E-2E58E5817F75}"

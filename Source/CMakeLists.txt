@@ -39,9 +39,3 @@ add_subdirectory(Core)
 if (ANDROID)
   add_subdirectory(Android/jni)
 endif()
-
-if (DSPTOOL)
-  add_subdirectory(DSPTool)
-endif()
-
-# TODO: Add DSPSpy. Preferably make it option() and cpack component
