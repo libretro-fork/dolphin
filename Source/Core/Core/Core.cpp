@@ -80,10 +80,6 @@ namespace Core
 static bool s_wants_determinism;
 
 // Declarations and definitions
-static Common::Timer s_timer;
-static std::atomic<u32> s_drawn_frame;
-static std::atomic<u32> s_drawn_video;
-
 static bool s_is_stopping = false;
 static bool s_hardware_initialized = false;
 static bool s_is_started = false;
@@ -96,7 +92,6 @@ static std::thread s_emu_thread;
 static StateChangedCallbackFunc s_on_state_changed_callback;
 
 static std::thread s_cpu_thread;
-static bool s_request_refresh_info = false;
 static bool s_is_throttler_temp_disabled = false;
 static bool s_frame_step = false;
 
@@ -669,7 +664,6 @@ State GetState()
 
 void RequestRefreshInfo()
 {
-  s_request_refresh_info = true;
 }
 
 static bool PauseAndLock(bool do_lock, bool unpause_on_unlock)
@@ -729,19 +723,6 @@ void RunAsCPUThread(std::function<void()> function)
 // This should only be called from VI
 void VideoThrottle()
 {
-  // Update info per second
-  u32 ElapseTime = (u32)s_timer.GetTimeDifference();
-  if ((ElapseTime >= 1000 && s_drawn_video.load() > 0) || s_request_refresh_info)
-  {
-    UpdateTitle();
-
-    // Reset counter
-    s_timer.Update();
-    s_drawn_frame.store(0);
-    s_drawn_video.store(0);
-  }
-
-  s_drawn_video++;
 }
 
 // --- Callbacks for backends / engine ---
@@ -749,9 +730,6 @@ void VideoThrottle()
 // Should be called from GPU thread when a frame is drawn
 void Callback_VideoCopiedToXFB(bool video_update)
 {
-  if (video_update)
-    s_drawn_frame++;
-
   Movie::FrameUpdate();
 
   if (s_frame_step)
@@ -768,70 +746,6 @@ void Callback_VideoCopiedToXFB(bool video_update)
 
 void UpdateTitle()
 {
-  u32 ElapseTime = (u32)s_timer.GetTimeDifference();
-  s_request_refresh_info = false;
-  SConfig& _CoreParameter = SConfig::GetInstance();
-
-  if (ElapseTime == 0)
-    ElapseTime = 1;
-
-  float FPS = (float)(s_drawn_frame.load() * 1000.0 / ElapseTime);
-  float VPS = (float)(s_drawn_video.load() * 1000.0 / ElapseTime);
-  float Speed = (float)(s_drawn_video.load() * (100 * 1000.0) /
-                        (VideoInterface::GetTargetRefreshRate() * ElapseTime));
-
-  // Settings are shown the same for both extended and summary info
-  std::string SSettings = StringFromFormat(
-      "%s %s | %s | %s", PowerPC::GetCPUName(), _CoreParameter.bCPUThread ? "DC" : "SC",
-      g_video_backend->GetDisplayName().c_str(), _CoreParameter.bDSPHLE ? "HLE" : "LLE");
-
-  std::string SFPS;
-
-  if (Movie::IsPlayingInput())
-    SFPS = StringFromFormat("Input: %u/%u - VI: %u - FPS: %.0f - VPS: %.0f - %.0f%%",
-                            (u32)Movie::GetCurrentInputCount(), (u32)Movie::GetTotalInputCount(),
-                            (u32)Movie::GetCurrentFrame(), FPS, VPS, Speed);
-  else if (Movie::IsRecordingInput())
-    SFPS = StringFromFormat("Input: %u - VI: %u - FPS: %.0f - VPS: %.0f - %.0f%%",
-                            (u32)Movie::GetCurrentInputCount(), (u32)Movie::GetCurrentFrame(), FPS,
-                            VPS, Speed);
-  else
-  {
-    SFPS = StringFromFormat("FPS: %.0f - VPS: %.0f - %.0f%%", FPS, VPS, Speed);
-    if (SConfig::GetInstance().m_InterfaceExtendedFPSInfo)
-    {
-      // Use extended or summary information. The summary information does not print the ticks data,
-      // that's more of a debugging interest, it can always be optional of course if someone is
-      // interested.
-      static u64 ticks = 0;
-      static u64 idleTicks = 0;
-      u64 newTicks = CoreTiming::GetTicks();
-      u64 newIdleTicks = CoreTiming::GetIdleTicks();
-
-      u64 diff = (newTicks - ticks) / 1000000;
-      u64 idleDiff = (newIdleTicks - idleTicks) / 1000000;
-
-      ticks = newTicks;
-      idleTicks = newIdleTicks;
-
-      float TicksPercentage =
-          (float)diff / (float)(SystemTimers::GetTicksPerSecond() / 1000000) * 100;
-
-      SFPS += StringFromFormat(" | CPU: ~%i MHz [Real: %i + IdleSkip: %i] / %i MHz (~%3.0f%%)",
-                               (int)(diff), (int)(diff - idleDiff), (int)(idleDiff),
-                               SystemTimers::GetTicksPerSecond() / 1000000, TicksPercentage);
-    }
-  }
-
-  std::string message = StringFromFormat("%s | %s", SSettings.c_str(), SFPS.c_str());
-  if (SConfig::GetInstance().m_show_active_title)
-  {
-    const std::string& title = SConfig::GetInstance().GetTitleDescription();
-    if (!title.empty())
-      message += " | " + title;
-  }
-
-  Host_UpdateTitle(message);
 }
 
 void Shutdown()
