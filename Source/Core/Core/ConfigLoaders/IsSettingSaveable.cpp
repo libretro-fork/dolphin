@@ -127,11 +127,6 @@ bool IsSettingSaveable(const Config::ConfigLocation& config_location)
       // Graphics.GameSpecific
 
       Config::GFX_PERF_QUERIES_ENABLE.location,
-
-      // UI.General
-
-      Config::MAIN_USE_DISCORD_PRESENCE.location,
-
   };
 
   return std::find(s_setting_saveable.begin(), s_setting_saveable.end(), config_location) !=

@@ -1,7 +1,6 @@
 add_library(uicommon
   CommandLineParse.cpp
   Disassembler.cpp
-  DiscordPresence.cpp
   GameFile.cpp
   GameFileCache.cpp
   UICommon.cpp
@@ -34,9 +33,4 @@ if(ENABLE_LLVM)
     target_link_libraries(uicommon PRIVATE LLVM)
     target_include_directories(uicommon PRIVATE ${LLVM_INCLUDE_DIRS})
   endif()
-endif()
-
-if(USE_DISCORD_PRESENCE)
-  target_compile_definitions(uicommon PRIVATE -DUSE_DISCORD_PRESENCE)
-  target_link_libraries(uicommon PRIVATE discord-rpc)
 endif()

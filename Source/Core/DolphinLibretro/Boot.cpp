@@ -18,7 +18,6 @@
 #include "DolphinLibretro/Options.h"
 #include "DolphinLibretro/Video.h"
 #include "InputCommon/ControllerInterface/ControllerInterface.h"
-#include "UICommon/DiscordPresence.h"
 #include "UICommon/UICommon.h"
 #include "VideoCommon/AsyncRequests.h"
 #include "VideoCommon/VideoBackendBase.h"
@@ -62,7 +61,6 @@ bool retro_load_game(const struct retro_game_info* game)
   UICommon::CreateDirectories();
   UICommon::Init();
   Libretro::Log::Init();
-  Discord::SetDiscordPresenceEnabled(false);
   SetEnableAlert(false);
 
   INFO_LOG(COMMON, "User Directory set to '%s'", user_dir.c_str());

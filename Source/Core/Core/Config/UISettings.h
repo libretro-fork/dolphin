@@ -16,7 +16,6 @@ namespace Config
 
 // UI.General
 
-extern const ConfigInfo<bool> MAIN_USE_DISCORD_PRESENCE;
 extern const ConfigInfo<bool> MAIN_USE_GAME_COVERS;
 
 }  // namespace Config

@@ -33,7 +33,6 @@
 
 #include "InputCommon/GCAdapter.h"
 
-#include "UICommon/DiscordPresence.h"
 #include "UICommon/UICommon.h"
 #include "UICommon/USBUtils.h"
 
@@ -76,7 +75,6 @@ void Init()
   Config::AddConfigChangedCallback(InitCustomPaths);
   Config::AddLayer(ConfigLoaders::GenerateBaseConfigLoader());
   SConfig::Init();
-  Discord::Init();
   LogManager::Init();
   VideoBackendBase::PopulateList();
   WiimoteReal::LoadSettings();
@@ -92,7 +90,6 @@ void Shutdown()
   WiimoteReal::Shutdown();
   VideoBackendBase::ClearList();
   LogManager::Shutdown();
-  Discord::Shutdown();
   SConfig::Shutdown();
   Config::Shutdown();
 }

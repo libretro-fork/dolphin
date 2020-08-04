@@ -31,7 +31,6 @@ option(ENABLE_HEADLESS "Enables running Dolphin as a headless variant" OFF)
 option(ENABLE_ALSA "Enables ALSA sound backend" ON)
 option(ENABLE_PULSEAUDIO "Enables PulseAudio sound backend" ON)
 option(ENABLE_LLVM "Enables LLVM support, for disassembly" ON)
-option(USE_DISCORD_PRESENCE "Enables Discord Rich Presence, show the current game on Discord" ON)
 option(LIBRETRO "Build as a libretro library" OFF)
 
 option(ENABLE_GPROF "Enable gprof profiling (must be using Debug build)" OFF)
@@ -358,7 +357,6 @@ if(ANDROID)
     set(ANDROID 0)
   endif()
   set(USE_UPNP 0)
-  set(USE_DISCORD_PRESENCE 0)
 
   # We are cross compiling, search only the toolchain for libraries and includes
   SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
@@ -380,7 +378,6 @@ endif()
 
 if(ENABLE_HEADLESS)
   message(STATUS "Enabling Headless! Disabling GUI.")
-  set(USE_DISCORD_PRESENCE 0)
   add_definitions(-DUSE_HEADLESS)
 endif()
 
@@ -661,11 +658,6 @@ if(NOT ANDROID)
     message(STATUS "Using static HIDAPI from Externals")
     add_subdirectory(Externals/hidapi EXCLUDE_FROM_ALL)
   endif()
-endif()
-
-if(USE_DISCORD_PRESENCE)
-  message(STATUS "Using static DiscordRPC from Externals")
-  add_subdirectory(Externals/discord-rpc)
 endif()
 
 find_package(Libsystemd)
