@@ -198,16 +198,12 @@ void Mixer::PushSamples(const short* samples, unsigned int num_samples)
 {
   m_dma_mixer.PushSamples(samples, num_samples);
   int sample_rate = m_dma_mixer.GetInputSampleRate();
-  if (m_log_dsp_audio)
-    m_wave_writer_dsp.AddStereoSamplesBE(samples, num_samples, sample_rate);
 }
 
 void Mixer::PushStreamingSamples(const short* samples, unsigned int num_samples)
 {
   m_streaming_mixer.PushSamples(samples, num_samples);
   int sample_rate = m_streaming_mixer.GetInputSampleRate();
-  if (m_log_dtk_audio)
-    m_wave_writer_dtk.AddStereoSamplesBE(samples, num_samples, sample_rate);
 }
 
 void Mixer::PushWiimoteSpeakerSamples(const short* samples, unsigned int num_samples,
@@ -247,80 +243,6 @@ void Mixer::SetStreamingVolume(unsigned int lvolume, unsigned int rvolume)
 void Mixer::SetWiimoteSpeakerVolume(unsigned int lvolume, unsigned int rvolume)
 {
   m_wiimote_speaker_mixer.SetVolume(lvolume, rvolume);
-}
-
-void Mixer::StartLogDTKAudio(const std::string& filename)
-{
-  if (!m_log_dtk_audio)
-  {
-    bool success = m_wave_writer_dtk.Start(filename, m_streaming_mixer.GetInputSampleRate());
-    if (success)
-    {
-      m_log_dtk_audio = true;
-      m_wave_writer_dtk.SetSkipSilence(false);
-      NOTICE_LOG(AUDIO, "Starting DTK Audio logging");
-    }
-    else
-    {
-      m_wave_writer_dtk.Stop();
-      NOTICE_LOG(AUDIO, "Unable to start DTK Audio logging");
-    }
-  }
-  else
-  {
-    WARN_LOG(AUDIO, "DTK Audio logging has already been started");
-  }
-}
-
-void Mixer::StopLogDTKAudio()
-{
-  if (m_log_dtk_audio)
-  {
-    m_log_dtk_audio = false;
-    m_wave_writer_dtk.Stop();
-    NOTICE_LOG(AUDIO, "Stopping DTK Audio logging");
-  }
-  else
-  {
-    WARN_LOG(AUDIO, "DTK Audio logging has already been stopped");
-  }
-}
-
-void Mixer::StartLogDSPAudio(const std::string& filename)
-{
-  if (!m_log_dsp_audio)
-  {
-    bool success = m_wave_writer_dsp.Start(filename, m_dma_mixer.GetInputSampleRate());
-    if (success)
-    {
-      m_log_dsp_audio = true;
-      m_wave_writer_dsp.SetSkipSilence(false);
-      NOTICE_LOG(AUDIO, "Starting DSP Audio logging");
-    }
-    else
-    {
-      m_wave_writer_dsp.Stop();
-      NOTICE_LOG(AUDIO, "Unable to start DSP Audio logging");
-    }
-  }
-  else
-  {
-    WARN_LOG(AUDIO, "DSP Audio logging has already been started");
-  }
-}
-
-void Mixer::StopLogDSPAudio()
-{
-  if (m_log_dsp_audio)
-  {
-    m_log_dsp_audio = false;
-    m_wave_writer_dsp.Stop();
-    NOTICE_LOG(AUDIO, "Stopping DSP Audio logging");
-  }
-  else
-  {
-    WARN_LOG(AUDIO, "DSP Audio logging has already been stopped");
-  }
 }
 
 void Mixer::MixerFifo::DoState(PointerWrap& p)

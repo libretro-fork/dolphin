@@ -7,7 +7,6 @@
 #include <array>
 #include <atomic>
 
-#include "AudioCommon/WaveFile.h"
 #include "Common/CommonTypes.h"
 
 class PointerWrap;
@@ -35,12 +34,6 @@ public:
   void SetStreamInputSampleRate(unsigned int rate);
   void SetStreamingVolume(unsigned int lvolume, unsigned int rvolume);
   void SetWiimoteSpeakerVolume(unsigned int lvolume, unsigned int rvolume);
-
-  void StartLogDTKAudio(const std::string& filename);
-  void StopLogDTKAudio();
-
-  void StartLogDSPAudio(const std::string& filename);
-  void StopLogDSPAudio();
 
   float GetCurrentSpeed() const { return m_speed.load(); }
   void UpdateSpeed(float val) { m_speed.store(val); }
@@ -86,9 +79,6 @@ private:
 
   std::array<short, MAX_SAMPLES * 2> m_scratch_buffer;
   std::array<float, MAX_SAMPLES * 2> m_float_conversion_buffer;
-
-  WaveFileWriter m_wave_writer_dtk;
-  WaveFileWriter m_wave_writer_dsp;
 
   bool m_log_dtk_audio = false;
   bool m_log_dsp_audio = false;

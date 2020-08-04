@@ -21,7 +21,6 @@
 // This shouldn't be a global, at least not here.
 std::unique_ptr<SoundStream> g_sound_stream;
 
-static bool s_audio_dump_start = false;
 static bool s_sound_stream_running = false;
 
 namespace AudioCommon
@@ -63,17 +62,11 @@ void InitSoundStream()
 
   UpdateSoundStream();
   SetSoundStreamRunning(true);
-
-  if (SConfig::GetInstance().m_DumpAudio && !s_audio_dump_start)
-    StartAudioDump();
 }
 
 void ShutdownSoundStream()
 {
   INFO_LOG(AUDIO, "Shutting down sound stream");
-
-  if (SConfig::GetInstance().m_DumpAudio && s_audio_dump_start)
-    StopAudioDump();
 
   SetSoundStreamRunning(false);
   g_sound_stream.reset();
@@ -177,11 +170,6 @@ void SendAIBuffer(const short* samples, unsigned int num_samples)
   if (!g_sound_stream)
     return;
 
-  if (SConfig::GetInstance().m_DumpAudio && !s_audio_dump_start)
-    StartAudioDump();
-  else if (!SConfig::GetInstance().m_DumpAudio && s_audio_dump_start)
-    StopAudioDump();
-
   Mixer* pMixer = g_sound_stream->GetMixer();
 
   if (pMixer && samples)
@@ -190,26 +178,6 @@ void SendAIBuffer(const short* samples, unsigned int num_samples)
   }
 
   g_sound_stream->Update();
-}
-
-void StartAudioDump()
-{
-  std::string audio_file_name_dtk = File::GetUserPath(D_DUMPAUDIO_IDX) + "dtkdump.wav";
-  std::string audio_file_name_dsp = File::GetUserPath(D_DUMPAUDIO_IDX) + "dspdump.wav";
-  File::CreateFullPath(audio_file_name_dtk);
-  File::CreateFullPath(audio_file_name_dsp);
-  g_sound_stream->GetMixer()->StartLogDTKAudio(audio_file_name_dtk);
-  g_sound_stream->GetMixer()->StartLogDSPAudio(audio_file_name_dsp);
-  s_audio_dump_start = true;
-}
-
-void StopAudioDump()
-{
-  if (!g_sound_stream)
-    return;
-  g_sound_stream->GetMixer()->StopLogDTKAudio();
-  g_sound_stream->GetMixer()->StopLogDSPAudio();
-  s_audio_dump_start = false;
 }
 
 void IncreaseVolume(unsigned short offset)

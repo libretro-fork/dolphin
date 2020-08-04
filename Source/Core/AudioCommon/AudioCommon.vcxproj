@@ -44,7 +44,6 @@
     <ClCompile Include="NullSoundStream.cpp" />
     <ClCompile Include="OpenALStream.cpp" />
     <ClCompile Include="WASAPIStream.cpp" />
-    <ClCompile Include="WaveFile.cpp" />
     <ClCompile Include="XAudio2Stream.cpp" />
     <ClCompile Include="XAudio2_7Stream.cpp">
       <AdditionalIncludeDirectories>$(ExternalsDir)XAudio2_7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -63,7 +62,6 @@
     <ClInclude Include="PulseAudioStream.h" />
     <ClInclude Include="SoundStream.h" />
     <ClInclude Include="WASAPIStream.h" />
-    <ClInclude Include="WaveFile.h" />
     <ClInclude Include="XAudio2Stream.h" />
     <ClInclude Include="XAudio2_7Stream.h" />
   </ItemGroup>

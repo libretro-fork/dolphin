@@ -5,7 +5,6 @@ add_library(audiocommon
   DPL2Decoder.cpp
   Mixer.cpp
   NullSoundStream.cpp
-  WaveFile.cpp
 )
 
 find_package(OpenSLES)
