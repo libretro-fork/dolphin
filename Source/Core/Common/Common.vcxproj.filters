@@ -10,9 +10,6 @@
     <Filter Include="GL">
       <UniqueIdentifier>{3bcf0d33-06a7-4eb6-bf2d-bc5273f551a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GL\GLInterface">
-      <UniqueIdentifier>{79bb235a-a0ea-42e2-af6e-532088e5e253}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GL\GLExtensions">
       <UniqueIdentifier>{c1d6f1fe-5ec5-406d-84f2-ed64d733d2c3}</UniqueIdentifier>
     </Filter>
@@ -240,9 +237,6 @@
     <ClInclude Include="GL\GLExtensions\NV_depth_buffer_float.h">
       <Filter>GL\GLExtensions</Filter>
     </ClInclude>
-    <ClInclude Include="GL\GLInterface\WGL.h">
-      <Filter>GL\GLInterface</Filter>
-    </ClInclude>
     <ClInclude Include="Assert.h" />
     <ClInclude Include="Analytics.h" />
     <ClInclude Include="Semaphore.h" />
@@ -335,9 +329,6 @@
     </ClCompile>
     <ClCompile Include="GL\GLExtensions\GLExtensions.cpp">
       <Filter>GL\GLExtensions</Filter>
-    </ClCompile>
-    <ClCompile Include="GL\GLInterface\WGL.cpp">
-      <Filter>GL\GLInterface</Filter>
     </ClCompile>
     <ClCompile Include="Analytics.cpp" />
     <ClCompile Include="MD5.cpp" />
