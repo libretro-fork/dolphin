@@ -1,5 +1,4 @@
 add_library(common
-  Analytics.cpp
   CDUtils.cpp
   ColorUtil.cpp
   CommonFuncs.cpp
@@ -71,7 +70,6 @@ endif()
 
 if(ANDROID)
   target_sources(common PRIVATE
-    AndroidAnalytics.cpp
     Logging/ConsoleListenerDroid.cpp
   )
 elseif(WIN32)

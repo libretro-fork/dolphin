@@ -1,6 +1,5 @@
 add_library(core
   ActionReplay.cpp
-  Analytics.cpp
   ARDecrypt.cpp
   BootManager.cpp
   ConfigManager.cpp

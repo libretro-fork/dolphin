@@ -37,7 +37,6 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClInclude Include="Align.h" />
-    <ClInclude Include="Analytics.h" />
     <ClInclude Include="Assert.h" />
     <ClInclude Include="Atomic.h" />
     <ClInclude Include="Atomic_GCC.h" />
@@ -172,7 +171,6 @@
     <ClInclude Include="Logging\LogManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Analytics.cpp" />
     <ClCompile Include="CDUtils.cpp" />
     <ClCompile Include="ColorUtil.cpp" />
     <ClCompile Include="CommonFuncs.cpp" />

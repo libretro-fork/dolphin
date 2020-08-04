@@ -35,14 +35,6 @@ option(ENABLE_LLVM "Enables LLVM support, for disassembly" ON)
 option(USE_DISCORD_PRESENCE "Enables Discord Rich Presence, show the current game on Discord" ON)
 option(LIBRETRO "Build as a libretro library" OFF)
 
-# Maintainers: if you consider blanket disabling this for your users, please
-# consider the following points:
-#  * No data is being sent without explicit user approval (pop up box at first
-#    launch).
-#  * The Dolphin team relies on the data in order to understand the behavior
-#    of our software in the wild.
-option(ENABLE_ANALYTICS "Enables opt-in Analytics collection" ON)
-
 option(ENCODE_FRAMEDUMPS "Encode framedumps in AVI format" ON)
 
 option(ENABLE_GPROF "Enable gprof profiling (must be using Debug build)" OFF)
@@ -389,7 +381,6 @@ if(LIBRETRO)
   set(ENABLE_PULSEAUDIO 0)
   set(ENABLE_OPENAL 0)
   set(ENABLE_LLVM 0)
-  set(ENABLE_ANALYTICS 0)
   set(ENCODE_FRAMEDUMPS 0)
   add_definitions(-D__LIBRETRO__)
   check_and_add_flag(FPIC -fpic)
@@ -495,11 +486,6 @@ if(UNIX)
   add_definitions(-DUSE_PIPES=1)
   message(STATUS "Watching game memory for changes")
   add_definitions(-DUSE_MEMORYWATCHER=1)
-endif()
-
-if(ENABLE_ANALYTICS)
-  message(STATUS "Enabling analytics collection (subject to end-user opt-in)")
-  add_definitions(-DUSE_ANALYTICS=1)
 endif()
 
 ########################################

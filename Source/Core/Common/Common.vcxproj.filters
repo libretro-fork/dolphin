@@ -238,7 +238,6 @@
       <Filter>GL\GLExtensions</Filter>
     </ClInclude>
     <ClInclude Include="Assert.h" />
-    <ClInclude Include="Analytics.h" />
     <ClInclude Include="Semaphore.h" />
     <ClInclude Include="MD5.h" />
     <ClInclude Include="GL\GLExtensions\ARB_texture_storage.h">
@@ -330,7 +329,6 @@
     <ClCompile Include="GL\GLExtensions\GLExtensions.cpp">
       <Filter>GL\GLExtensions</Filter>
     </ClCompile>
-    <ClCompile Include="Analytics.cpp" />
     <ClCompile Include="MD5.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="LdrWatcher.cpp" />

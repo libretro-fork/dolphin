@@ -8,7 +8,6 @@
 
 #include "Common/ChunkFile.h"
 #include "Common/Swap.h"
-#include "Core/Analytics.h"
 #include "Core/HW/Memmap.h"
 #include "Core/PowerPC/JitInterface.h"
 #include "Core/PowerPC/PowerPC.h"
@@ -154,7 +153,6 @@ u32 InstructionCache::ReadInstruction(u32 addr)
   {
     INFO_LOG(POWERPC, "ICache read at %08x returned stale data: CACHED: %08x vs. RAM: %08x", addr,
              res, inmem);
-    DolphinAnalytics::Instance()->ReportGameQuirk(GameQuirk::ICACHE_MATTERS);
   }
   return res;
 }

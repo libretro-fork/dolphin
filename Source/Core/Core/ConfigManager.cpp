@@ -25,7 +25,6 @@
 #include "Common/StringUtil.h"
 #include "Common/scmrev.h"
 
-#include "Core/Analytics.h"
 #include "Core/Boot/Boot.h"
 #include "Core/CommonTitles.h"
 #include "Core/Config/SYSCONFSettings.h"
@@ -87,7 +86,6 @@ void SConfig::SaveSettings()
   SaveDSPSettings(ini);
   SaveInputSettings(ini);
   SaveFifoPlayerSettings(ini);
-  SaveAnalyticsSettings(ini);
   SaveNetworkSettings(ini);
   SaveBluetoothPassthroughSettings(ini);
   SaveUSBPassthroughSettings(ini);
@@ -311,15 +309,6 @@ void SConfig::SaveNetworkSettings(IniFile& ini)
   network->Set("SSLDumpPeerCert", m_SSLDumpPeerCert);
 }
 
-void SConfig::SaveAnalyticsSettings(IniFile& ini)
-{
-  IniFile::Section* analytics = ini.GetOrCreateSection("Analytics");
-
-  analytics->Set("ID", m_analytics_id);
-  analytics->Set("Enabled", m_analytics_enabled);
-  analytics->Set("PermissionAsked", m_analytics_permission_asked);
-}
-
 void SConfig::SaveBluetoothPassthroughSettings(IniFile& ini)
 {
   IniFile::Section* section = ini.GetOrCreateSection("BluetoothPassthrough");
@@ -370,7 +359,6 @@ void SConfig::LoadSettings()
   LoadInputSettings(ini);
   LoadFifoPlayerSettings(ini);
   LoadNetworkSettings(ini);
-  LoadAnalyticsSettings(ini);
   LoadBluetoothPassthroughSettings(ini);
   LoadUSBPassthroughSettings(ini);
   LoadAutoUpdateSettings(ini);
@@ -605,15 +593,6 @@ void SConfig::LoadNetworkSettings(IniFile& ini)
   network->Get("SSLDumpPeerCert", &m_SSLDumpPeerCert, false);
 }
 
-void SConfig::LoadAnalyticsSettings(IniFile& ini)
-{
-  IniFile::Section* analytics = ini.GetOrCreateSection("Analytics");
-
-  analytics->Get("ID", &m_analytics_id, "");
-  analytics->Get("Enabled", &m_analytics_enabled, false);
-  analytics->Get("PermissionAsked", &m_analytics_permission_asked, false);
-}
-
 void SConfig::LoadBluetoothPassthroughSettings(IniFile& ini)
 {
   IniFile::Section* section = ini.GetOrCreateSection("BluetoothPassthrough");
@@ -734,7 +713,6 @@ void SConfig::SetRunningGameMetadata(const std::string& game_id, u64 title_id, u
     HLE::Reload();
     PatchEngine::Reload();
     HiresTexture::Update();
-    DolphinAnalytics::Instance()->ReportGameStart();
   }
 }
 
