@@ -62,8 +62,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Video Backends", "Video Bac
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pch", "PCH\pch.vcxproj", "{76563A7F-1011-4EAD-B667-7BB18D09568E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\UnitTests.vcxproj", "{474661E7-C73A-43A6-AFEE-EE1EC433D49E}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "enet", "..\Externals\enet\enet.vcxproj", "{CBC76802-C128-4B17-BF6C-23B08C313E5E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curl", "..\Externals\curl\curl.vcxproj", "{BB00605C-125F-4A21-B33B-7BF418322DCB}"
