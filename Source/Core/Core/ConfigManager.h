@@ -153,11 +153,6 @@ struct SConfig
   bool bFullscreen = false, bRenderToMain = false;
   bool bDisableScreenSaver = false;
 
-  // Analytics settings.
-  std::string m_analytics_id;
-  bool m_analytics_enabled = false;
-  bool m_analytics_permission_asked = false;
-
   // Bluetooth passthrough mode settings
   bool m_bt_passthrough_enabled = false;
   int m_bt_passthrough_pid = -1;
@@ -277,8 +272,6 @@ struct SConfig
   bool m_ShowFrameCount;
   bool m_ShowRTC;
   std::string m_strMovieAuthor;
-  bool m_DumpFrames;
-  bool m_DumpFramesSilent;
   bool m_ShowInputDisplay;
 
   bool m_PauseOnFocusLost;
@@ -286,8 +279,6 @@ struct SConfig
   // DSP settings
   bool m_DSPEnableJIT;
   bool m_DSPCaptureLog;
-  bool m_DumpAudio;
-  bool m_DumpAudioSilent;
   bool m_IsMuted;
   bool m_DumpUCode;
   int m_Volume;

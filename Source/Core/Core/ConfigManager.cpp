@@ -259,8 +259,6 @@ void SConfig::SaveMovieSettings(IniFile& ini)
 
   movie->Set("PauseMovie", m_PauseMovie);
   movie->Set("Author", m_strMovieAuthor);
-  movie->Set("DumpFrames", m_DumpFrames);
-  movie->Set("DumpFramesSilent", m_DumpFramesSilent);
   movie->Set("ShowInputDisplay", m_ShowInputDisplay);
   movie->Set("ShowRTC", m_ShowRTC);
 }
@@ -270,8 +268,6 @@ void SConfig::SaveDSPSettings(IniFile& ini)
   IniFile::Section* dsp = ini.GetOrCreateSection("DSP");
 
   dsp->Set("EnableJIT", m_DSPEnableJIT);
-  dsp->Set("DumpAudio", m_DumpAudio);
-  dsp->Set("DumpAudioSilent", m_DumpAudioSilent);
   dsp->Set("DumpUCode", m_DumpUCode);
   dsp->Set("Backend", sBackend);
   dsp->Set("Volume", m_Volume);
@@ -539,8 +535,6 @@ void SConfig::LoadMovieSettings(IniFile& ini)
 
   movie->Get("PauseMovie", &m_PauseMovie, false);
   movie->Get("Author", &m_strMovieAuthor, "");
-  movie->Get("DumpFrames", &m_DumpFrames, false);
-  movie->Get("DumpFramesSilent", &m_DumpFramesSilent, false);
   movie->Get("ShowInputDisplay", &m_ShowInputDisplay, false);
   movie->Get("ShowRTC", &m_ShowRTC, false);
 }
@@ -550,8 +544,6 @@ void SConfig::LoadDSPSettings(IniFile& ini)
   IniFile::Section* dsp = ini.GetOrCreateSection("DSP");
 
   dsp->Get("EnableJIT", &m_DSPEnableJIT, true);
-  dsp->Get("DumpAudio", &m_DumpAudio, false);
-  dsp->Get("DumpAudioSilent", &m_DumpAudioSilent, false);
   dsp->Get("DumpUCode", &m_DumpUCode, false);
   dsp->Get("Backend", &sBackend, AudioCommon::GetDefaultSoundBackend());
   dsp->Get("Volume", &m_Volume, 100);
@@ -751,10 +743,6 @@ void SConfig::LoadDefaults()
   iLatency = 20;
   bUsePanicHandlers = true;
   bOnScreenDisplayMessages = true;
-
-  m_analytics_id = "";
-  m_analytics_enabled = false;
-  m_analytics_permission_asked = false;
 
   bLoopFifoReplay = true;
 

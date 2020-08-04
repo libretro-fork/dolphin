@@ -86,7 +86,6 @@ bool retro_load_game(const struct retro_game_info* game)
   SConfig::GetInstance().m_OCFactor = Libretro::Options::cpuClockRate;
   SConfig::GetInstance().m_OCEnable = Libretro::Options::cpuClockRate != 1.0;
   SConfig::GetInstance().sBackend = BACKEND_NULLSOUND;
-  SConfig::GetInstance().m_DumpAudio = false;
   SConfig::GetInstance().bDPL2Decoder = false;
   SConfig::GetInstance().iLatency = 20;
 
