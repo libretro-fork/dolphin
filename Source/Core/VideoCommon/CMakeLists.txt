@@ -82,13 +82,3 @@ else()
     TextureDecoder_Generic.cpp
   )
 endif()
-
-if(FFmpeg_FOUND)
-  target_sources(videocommon PRIVATE AVIDump.cpp)
-  target_link_libraries(videocommon PRIVATE
-    FFmpeg::avcodec
-    FFmpeg::avformat
-    FFmpeg::avutil
-    FFmpeg::swscale
-  )
-endif()

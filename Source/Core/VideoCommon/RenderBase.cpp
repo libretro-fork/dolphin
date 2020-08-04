@@ -43,7 +43,6 @@
 #include "Core/Host.h"
 #include "Core/Movie.h"
 
-#include "VideoCommon/AVIDump.h"
 #include "VideoCommon/AbstractFramebuffer.h"
 #include "VideoCommon/AbstractStagingTexture.h"
 #include "VideoCommon/AbstractTexture.h"
@@ -101,9 +100,6 @@ bool Renderer::Initialize()
 
 void Renderer::Shutdown()
 {
-  // First stop any framedumping, which might need to dump the last xfb frame. This process
-  // can require additional graphics sub-systems so it needs to be done first
-  ShutdownFrameDumping();
 }
 
 void Renderer::RenderToXFB(u32 xfbAddr, const EFBRectangle& sourceRc, u32 fbStride, u32 fbHeight,
@@ -670,11 +666,6 @@ void Renderer::Swap(u32 xfbAddr, u32 fbWidth, u32 fbStride, u32 fbHeight, const 
       m_aspect_wide = flush_count_anamorphic > 0.75 * flush_total;
   }
 
-  // Ensure the last frame was written to the dump.
-  // This is required even if frame dumping has stopped, since the frame dump is one frame
-  // behind the renderer.
-  FlushFrameDump();
-
   if (xfbAddr && fbWidth && fbStride && fbHeight)
   {
     constexpr int force_safe_texture_cache_hash = 0;
@@ -720,9 +711,6 @@ void Renderer::Swap(u32 xfbAddr, u32 fbWidth, u32 fbStride, u32 fbHeight, const 
 
       m_fps_counter.Update();
 
-      if (IsFrameDumping())
-        DumpCurrentFrame();
-
       frameCount++;
       GFX_DEBUGGER_PAUSE_AT(NEXT_FRAME, true);
 
@@ -749,299 +737,6 @@ void Renderer::Swap(u32 xfbAddr, u32 fbWidth, u32 fbStride, u32 fbHeight, const 
     m_last_xfb_width = (fbStride < 1 || fbStride > MAX_XFB_WIDTH) ? MAX_XFB_WIDTH : fbStride;
     m_last_xfb_height = (fbHeight < 1 || fbHeight > MAX_XFB_HEIGHT) ? MAX_XFB_HEIGHT : fbHeight;
   }
-}
-
-bool Renderer::IsFrameDumping()
-{
-  if (m_screenshot_request.IsSet())
-    return true;
-
-  if (SConfig::GetInstance().m_DumpFrames)
-    return true;
-
-  return false;
-}
-
-void Renderer::DumpCurrentFrame()
-{
-  // Scale/render to frame dump texture.
-  RenderFrameDump();
-
-  // Queue a readback for the next frame.
-  QueueFrameDumpReadback();
-}
-
-void Renderer::RenderFrameDump()
-{
-  int target_width, target_height;
-  if (!g_ActiveConfig.bInternalResolutionFrameDumps && !IsHeadless())
-  {
-    auto target_rect = GetTargetRectangle();
-    target_width = target_rect.GetWidth();
-    target_height = target_rect.GetHeight();
-  }
-  else
-  {
-    std::tie(target_width, target_height) = CalculateOutputDimensions(
-        m_last_xfb_texture->GetConfig().width, m_last_xfb_texture->GetConfig().height);
-  }
-
-  // Ensure framebuffer exists (we lazily allocate it in case frame dumping isn't used).
-  // Or, resize texture if it isn't large enough to accommodate the current frame.
-  if (!m_frame_dump_render_texture ||
-      m_frame_dump_render_texture->GetConfig().width != static_cast<u32>(target_width) ||
-      m_frame_dump_render_texture->GetConfig().height != static_cast<u32>(target_height))
-  {
-    // Recreate texture objects. Release before creating so we don't temporarily use twice the RAM.
-    TextureConfig config(target_width, target_height, 1, 1, 1, AbstractTextureFormat::RGBA8, true);
-    m_frame_dump_render_texture.reset();
-    m_frame_dump_render_texture = CreateTexture(config);
-    ASSERT(m_frame_dump_render_texture);
-  }
-
-  // Scaling is likely to occur here, but if possible, do a bit-for-bit copy.
-  if (m_last_xfb_region.GetWidth() != target_width ||
-      m_last_xfb_region.GetHeight() != target_height)
-  {
-    m_frame_dump_render_texture->ScaleRectangleFromTexture(
-        m_last_xfb_texture, m_last_xfb_region, EFBRectangle{0, 0, target_width, target_height});
-  }
-  else
-  {
-    m_frame_dump_render_texture->CopyRectangleFromTexture(
-        m_last_xfb_texture, m_last_xfb_region, 0, 0,
-        EFBRectangle{0, 0, target_width, target_height}, 0, 0);
-  }
-}
-
-void Renderer::QueueFrameDumpReadback()
-{
-  // Index 0 was just sent to AVI dump. Swap with the second texture.
-  if (m_frame_dump_readback_textures[0])
-    std::swap(m_frame_dump_readback_textures[0], m_frame_dump_readback_textures[1]);
-
-  std::unique_ptr<AbstractStagingTexture>& rbtex = m_frame_dump_readback_textures[0];
-  if (!rbtex || rbtex->GetConfig() != m_frame_dump_render_texture->GetConfig())
-  {
-    rbtex = CreateStagingTexture(StagingTextureType::Readback,
-                                 m_frame_dump_render_texture->GetConfig());
-  }
-
-  m_last_frame_state = AVIDump::FetchState(m_last_xfb_ticks);
-  m_last_frame_exported = true;
-  rbtex->CopyFromTexture(m_frame_dump_render_texture.get(), 0, 0);
-}
-
-void Renderer::FlushFrameDump()
-{
-  if (!m_last_frame_exported)
-    return;
-
-  // Ensure the previously-queued frame was encoded.
-  FinishFrameData();
-
-  // Queue encoding of the last frame dumped.
-  std::unique_ptr<AbstractStagingTexture>& rbtex = m_frame_dump_readback_textures[0];
-  rbtex->Flush();
-  if (rbtex->Map())
-  {
-    DumpFrameData(reinterpret_cast<u8*>(rbtex->GetMappedPointer()), rbtex->GetConfig().width,
-                  rbtex->GetConfig().height, static_cast<int>(rbtex->GetMappedStride()),
-                  m_last_frame_state);
-    rbtex->Unmap();
-  }
-
-  m_last_frame_exported = false;
-
-  // Shutdown frame dumping if it is no longer active.
-  if (!IsFrameDumping())
-    ShutdownFrameDumping();
-}
-
-void Renderer::ShutdownFrameDumping()
-{
-  // Ensure the last queued readback has been sent to the encoder.
-  FlushFrameDump();
-
-  if (!m_frame_dump_thread_running.IsSet())
-    return;
-
-  // Ensure previous frame has been encoded.
-  FinishFrameData();
-
-  // Wake thread up, and wait for it to exit.
-  m_frame_dump_thread_running.Clear();
-  m_frame_dump_start.Set();
-  if (m_frame_dump_thread.joinable())
-    m_frame_dump_thread.join();
-  m_frame_dump_render_texture.reset();
-  for (auto& tex : m_frame_dump_readback_textures)
-    tex.reset();
-}
-
-void Renderer::DumpFrameData(const u8* data, int w, int h, int stride, const AVIDump::Frame& state)
-{
-  m_frame_dump_config = FrameDumpConfig{data, w, h, stride, state};
-
-  if (!m_frame_dump_thread_running.IsSet())
-  {
-    if (m_frame_dump_thread.joinable())
-      m_frame_dump_thread.join();
-    m_frame_dump_thread_running.Set();
-    m_frame_dump_thread = std::thread(&Renderer::RunFrameDumps, this);
-  }
-
-  // Wake worker thread up.
-  m_frame_dump_start.Set();
-  m_frame_dump_frame_running = true;
-}
-
-void Renderer::FinishFrameData()
-{
-  if (!m_frame_dump_frame_running)
-    return;
-
-  m_frame_dump_done.Wait();
-  m_frame_dump_frame_running = false;
-}
-
-void Renderer::RunFrameDumps()
-{
-  Common::SetCurrentThreadName("FrameDumping");
-  bool dump_to_avi = !g_ActiveConfig.bDumpFramesAsImages;
-  bool frame_dump_started = false;
-
-// If Dolphin was compiled without libav, we only support dumping to images.
-#if !defined(HAVE_FFMPEG)
-  if (dump_to_avi)
-  {
-    WARN_LOG(VIDEO, "AVI frame dump requested, but Dolphin was compiled without libav. "
-                    "Frame dump will be saved as images instead.");
-    dump_to_avi = false;
-  }
-#endif
-
-  while (true)
-  {
-    m_frame_dump_start.Wait();
-    if (!m_frame_dump_thread_running.IsSet())
-      break;
-
-    auto config = m_frame_dump_config;
-
-    // Save screenshot
-    if (m_screenshot_request.TestAndClear())
-    {
-      std::lock_guard<std::mutex> lk(m_screenshot_lock);
-
-      if (TextureToPng(config.data, config.stride, m_screenshot_name, config.width, config.height,
-                       false))
-        OSD::AddMessage("Screenshot saved to " + m_screenshot_name);
-
-      // Reset settings
-      m_screenshot_name.clear();
-      m_screenshot_completed.Set();
-    }
-
-    if (SConfig::GetInstance().m_DumpFrames)
-    {
-      if (!frame_dump_started)
-      {
-        if (dump_to_avi)
-          frame_dump_started = StartFrameDumpToAVI(config);
-        else
-          frame_dump_started = StartFrameDumpToImage(config);
-
-        // Stop frame dumping if we fail to start.
-        if (!frame_dump_started)
-          SConfig::GetInstance().m_DumpFrames = false;
-      }
-
-      // If we failed to start frame dumping, don't write a frame.
-      if (frame_dump_started)
-      {
-        if (dump_to_avi)
-          DumpFrameToAVI(config);
-        else
-          DumpFrameToImage(config);
-      }
-    }
-
-    m_frame_dump_done.Set();
-  }
-
-  if (frame_dump_started)
-  {
-    // No additional cleanup is needed when dumping to images.
-    if (dump_to_avi)
-      StopFrameDumpToAVI();
-  }
-}
-
-#if defined(HAVE_FFMPEG)
-
-bool Renderer::StartFrameDumpToAVI(const FrameDumpConfig& config)
-{
-  return AVIDump::Start(config.width, config.height);
-}
-
-void Renderer::DumpFrameToAVI(const FrameDumpConfig& config)
-{
-  AVIDump::AddFrame(config.data, config.width, config.height, config.stride, config.state);
-}
-
-void Renderer::StopFrameDumpToAVI()
-{
-  AVIDump::Stop();
-}
-
-#else
-
-bool Renderer::StartFrameDumpToAVI(const FrameDumpConfig& config)
-{
-  return false;
-}
-
-void Renderer::DumpFrameToAVI(const FrameDumpConfig& config)
-{
-}
-
-void Renderer::StopFrameDumpToAVI()
-{
-}
-
-#endif  // defined(HAVE_FFMPEG)
-
-std::string Renderer::GetFrameDumpNextImageFileName() const
-{
-  return StringFromFormat("%sframedump_%u.png", File::GetUserPath(D_DUMPFRAMES_IDX).c_str(),
-                          m_frame_dump_image_counter);
-}
-
-bool Renderer::StartFrameDumpToImage(const FrameDumpConfig& config)
-{
-  m_frame_dump_image_counter = 1;
-  if (!SConfig::GetInstance().m_DumpFramesSilent)
-  {
-    // Only check for the presence of the first image to confirm overwriting.
-    // A previous run will always have at least one image, and it's safe to assume that if the user
-    // has allowed the first image to be overwritten, this will apply any remaining images as well.
-    std::string filename = GetFrameDumpNextImageFileName();
-    if (File::Exists(filename))
-    {
-      if (!AskYesNoT("Frame dump image(s) '%s' already exists. Overwrite?", filename.c_str()))
-        return false;
-    }
-  }
-
-  return true;
-}
-
-void Renderer::DumpFrameToImage(const FrameDumpConfig& config)
-{
-  std::string filename = GetFrameDumpNextImageFileName();
-  TextureToPng(config.data, config.stride, filename, config.width, config.height, false);
-  m_frame_dump_image_counter++;
 }
 
 bool Renderer::UseVertexDepthRange() const

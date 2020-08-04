@@ -41,7 +41,6 @@
     <ClCompile Include="AbstractTexture.cpp" />
     <ClCompile Include="AsyncRequests.cpp" />
     <ClCompile Include="AsyncShaderCompiler.cpp" />
-    <ClCompile Include="AVIDump.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="BPFunctions.cpp" />
     <ClCompile Include="BPMemory.cpp" />
@@ -106,7 +105,6 @@
     <ClInclude Include="AbstractTexture.h" />
     <ClInclude Include="AsyncRequests.h" />
     <ClInclude Include="AsyncShaderCompiler.h" />
-    <ClInclude Include="AVIDump.h" />
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="BPFunctions.h" />
     <ClInclude Include="BPMemory.h" />

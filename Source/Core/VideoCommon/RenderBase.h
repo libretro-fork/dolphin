@@ -27,7 +27,6 @@
 #include "Common/Event.h"
 #include "Common/Flag.h"
 #include "Common/MathUtil.h"
-#include "VideoCommon/AVIDump.h"
 #include "VideoCommon/AsyncShaderCompiler.h"
 #include "VideoCommon/BPMemory.h"
 #include "VideoCommon/FPSCounter.h"
@@ -242,7 +241,6 @@ protected:
   u32 m_last_efb_multisamples = 1;
 
 private:
-  void RunFrameDumps();
   std::tuple<int, int> CalculateOutputDimensions(int width, int height);
 
   PEControl::PixelFormat m_prev_efb_format = PEControl::INVALID_FMT;
@@ -251,28 +249,6 @@ private:
   // These will be set on the first call to SetWindowSize.
   int m_last_window_request_width = 0;
   int m_last_window_request_height = 0;
-
-  // frame dumping
-  std::thread m_frame_dump_thread;
-  Common::Event m_frame_dump_start;
-  Common::Event m_frame_dump_done;
-  Common::Flag m_frame_dump_thread_running;
-  u32 m_frame_dump_image_counter = 0;
-  bool m_frame_dump_frame_running = false;
-  struct FrameDumpConfig
-  {
-    const u8* data;
-    int width;
-    int height;
-    int stride;
-    AVIDump::Frame state;
-  } m_frame_dump_config;
-
-  // Texture used for screenshot/frame dumping
-  std::unique_ptr<AbstractTexture> m_frame_dump_render_texture;
-  std::array<std::unique_ptr<AbstractStagingTexture>, 2> m_frame_dump_readback_textures;
-  AVIDump::Frame m_last_frame_state;
-  bool m_last_frame_exported = false;
 
   // Tracking of XFB textures so we don't render duplicate frames.
   AbstractTexture* m_last_xfb_texture = nullptr;
@@ -286,35 +262,6 @@ private:
 
   s32 m_osd_message = 0;
   s32 m_osd_time = 0;
-
-  // NOTE: The methods below are called on the framedumping thread.
-  bool StartFrameDumpToAVI(const FrameDumpConfig& config);
-  void DumpFrameToAVI(const FrameDumpConfig& config);
-  void StopFrameDumpToAVI();
-  std::string GetFrameDumpNextImageFileName() const;
-  bool StartFrameDumpToImage(const FrameDumpConfig& config);
-  void DumpFrameToImage(const FrameDumpConfig& config);
-  void ShutdownFrameDumping();
-
-  bool IsFrameDumping();
-
-  // Asynchronously encodes the current staging texture to the frame dump.
-  void DumpCurrentFrame();
-
-  // Fills the frame dump render texture with the current XFB texture.
-  void RenderFrameDump();
-
-  // Queues the current frame for readback, which will be written to AVI next frame.
-  void QueueFrameDumpReadback();
-
-  // Asynchronously encodes the specified pointer of frame data to the frame dump.
-  void DumpFrameData(const u8* data, int w, int h, int stride, const AVIDump::Frame& state);
-
-  // Ensures all rendered frames are queued for encoding.
-  void FlushFrameDump();
-
-  // Ensures all encoded frames have been written to the output file.
-  void FinishFrameData();
 };
 
 extern std::unique_ptr<Renderer> g_renderer;

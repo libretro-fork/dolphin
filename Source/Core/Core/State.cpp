@@ -35,7 +35,6 @@
 #include "Core/NetPlayClient.h"
 #include "Core/PowerPC/PowerPC.h"
 
-#include "VideoCommon/AVIDump.h"
 #include "VideoCommon/OnScreenDisplay.h"
 #include "VideoCommon/VideoBackendBase.h"
 
@@ -193,10 +192,6 @@ void DoState(PointerWrap& p)
   p.DoMarker("Movie");
   Gecko::DoState(p);
   p.DoMarker("Gecko");
-
-#if defined(HAVE_FFMPEG)
-  AVIDump::DoState();
-#endif
 }
 
 void LoadFromBuffer(std::vector<u8>& buffer)
