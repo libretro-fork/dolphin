@@ -224,8 +224,6 @@ void SConfig::SaveCoreSettings(IniFile& ini)
   core->Set("OverrideGCLang", bOverrideGCLanguage);
   core->Set("DPL2Decoder", bDPL2Decoder);
   core->Set("AudioLatency", iLatency);
-  core->Set("AudioStretch", m_audio_stretch);
-  core->Set("AudioStretchMaxLatency", m_audio_stretch_max_latency);
   core->Set("AgpCartAPath", m_strGbaCartA);
   core->Set("AgpCartBPath", m_strGbaCartB);
   core->Set("SlotA", m_EXIDevice[0]);
@@ -490,8 +488,6 @@ void SConfig::LoadCoreSettings(IniFile& ini)
   core->Get("OverrideGCLang", &bOverrideGCLanguage, false);
   core->Get("DPL2Decoder", &bDPL2Decoder, false);
   core->Get("AudioLatency", &iLatency, 20);
-  core->Get("AudioStretch", &m_audio_stretch, false);
-  core->Get("AudioStretchMaxLatency", &m_audio_stretch_max_latency, 80);
   core->Get("AgpCartAPath", &m_strGbaCartA);
   core->Get("AgpCartBPath", &m_strGbaCartB);
   core->Get("SlotA", (int*)&m_EXIDevice[0], ExpansionInterface::EXIDEVICE_MEMORYCARDFOLDER);
@@ -753,8 +749,6 @@ void SConfig::LoadDefaults()
   bWii = false;
   bDPL2Decoder = false;
   iLatency = 20;
-  m_audio_stretch = false;
-  m_audio_stretch_max_latency = 80;
   bUsePanicHandlers = true;
   bOnScreenDisplayMessages = true;
 

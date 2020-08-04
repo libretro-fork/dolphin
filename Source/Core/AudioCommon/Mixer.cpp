@@ -16,7 +16,7 @@
 #include "Core/ConfigManager.h"
 
 Mixer::Mixer(unsigned int BackendSampleRate)
-    : m_sampleRate(BackendSampleRate), m_stretcher(BackendSampleRate)
+    : m_sampleRate(BackendSampleRate)
 {
   INFO_LOG(AUDIO_INTERFACE, "Mixer is initialized");
   DPL2Reset();
@@ -132,31 +132,9 @@ unsigned int Mixer::Mix(short* samples, unsigned int num_samples)
 
   memset(samples, 0, num_samples * 2 * sizeof(short));
 
-  if (SConfig::GetInstance().m_audio_stretch)
-  {
-    unsigned int available_samples = AvailableSamples();
-
-    m_scratch_buffer.fill(0);
-
-    m_dma_mixer.Mix(m_scratch_buffer.data(), available_samples, false);
-    m_streaming_mixer.Mix(m_scratch_buffer.data(), available_samples, false);
-    m_wiimote_speaker_mixer.Mix(m_scratch_buffer.data(), available_samples, false);
-
-    if (!m_is_stretching)
-    {
-      m_stretcher.Clear();
-      m_is_stretching = true;
-    }
-    m_stretcher.ProcessSamples(m_scratch_buffer.data(), available_samples, num_samples);
-    m_stretcher.GetStretchedSamples(samples, num_samples);
-  }
-  else
-  {
-    m_dma_mixer.Mix(samples, num_samples, true);
-    m_streaming_mixer.Mix(samples, num_samples, true);
-    m_wiimote_speaker_mixer.Mix(samples, num_samples, true);
-    m_is_stretching = false;
-  }
+  m_dma_mixer.Mix(samples, num_samples, true);
+  m_streaming_mixer.Mix(samples, num_samples, true);
+  m_wiimote_speaker_mixer.Mix(samples, num_samples, true);
 
   return num_samples;
 }

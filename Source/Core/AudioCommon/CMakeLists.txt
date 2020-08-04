@@ -1,6 +1,5 @@
 add_library(audiocommon
   AudioCommon.cpp
-  AudioStretcher.cpp
   CubebStream.cpp
   CubebUtils.cpp
   DPL2Decoder.cpp
@@ -65,4 +64,4 @@ if(WIN32)
   )
 endif()
 
-target_link_libraries(audiocommon PRIVATE cubeb SoundTouch)
+target_link_libraries(audiocommon PRIVATE cubeb)

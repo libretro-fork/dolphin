@@ -89,7 +89,6 @@ bool retro_load_game(const struct retro_game_info* game)
   SConfig::GetInstance().m_DumpAudio = false;
   SConfig::GetInstance().bDPL2Decoder = false;
   SConfig::GetInstance().iLatency = 20;
-  SConfig::GetInstance().m_audio_stretch = false;
 
   Config::SetBase(Config::SYSCONF_LANGUAGE, (u32)(DiscIO::Language)Libretro::Options::Language);
   Config::SetBase(Config::SYSCONF_WIDESCREEN, Libretro::Options::Widescreen);

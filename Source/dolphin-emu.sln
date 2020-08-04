@@ -37,7 +37,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xxhash", "..\Externals\xxha
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\Externals\zlib\zlib.vcxproj", "{FF213B23-2C26-4214-9F88-85271E557E87}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoundTouch", "..\Externals\soundtouch\SoundTouch.vcxproj", "{EC082900-B4D8-42E9-9663-77F02F6936AE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mbedTLS", "..\Externals\mbedtls\mbedTLS.vcxproj", "{BDB6578B-0691-4E80-A46C-DF21639FD3B8}"
 EndProject

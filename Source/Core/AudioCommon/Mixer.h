@@ -7,7 +7,6 @@
 #include <array>
 #include <atomic>
 
-#include "AudioCommon/AudioStretcher.h"
 #include "AudioCommon/WaveFile.h"
 #include "Common/CommonTypes.h"
 
@@ -85,8 +84,6 @@ private:
   MixerFifo m_wiimote_speaker_mixer{this, 3000};
   unsigned int m_sampleRate;
 
-  bool m_is_stretching = false;
-  AudioCommon::AudioStretcher m_stretcher;
   std::array<short, MAX_SAMPLES * 2> m_scratch_buffer;
   std::array<float, MAX_SAMPLES * 2> m_float_conversion_buffer;
 

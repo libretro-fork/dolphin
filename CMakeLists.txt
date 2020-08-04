@@ -590,9 +590,6 @@ else()
   set(PNG png)
 endif()
 
-# Using static soundtouch from Externals
-# Unable to use system soundtouch library: We require shorts, not floats.
-add_subdirectory(Externals/soundtouch)
 include_directories(Externals)
 
 find_package(Cubeb)

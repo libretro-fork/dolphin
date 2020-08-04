@@ -116,8 +116,6 @@ struct SConfig
 
   bool bDPL2Decoder = false;
   int iLatency = 20;
-  bool m_audio_stretch = false;
-  int m_audio_stretch_max_latency = 80;
 
   bool bRunCompareServer = false;
   bool bRunCompareClient = false;

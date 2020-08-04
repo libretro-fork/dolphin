@@ -31,9 +31,6 @@ const ConfigInfo<int> MAIN_GC_LANGUAGE{{System::Main, "Core", "SelectedLanguage"
 const ConfigInfo<bool> MAIN_OVERRIDE_GC_LANGUAGE{{System::Main, "Core", "OverrideGCLang"}, false};
 const ConfigInfo<bool> MAIN_DPL2_DECODER{{System::Main, "Core", "DPL2Decoder"}, false};
 const ConfigInfo<int> MAIN_AUDIO_LATENCY{{System::Main, "Core", "AudioLatency"}, 20};
-const ConfigInfo<bool> MAIN_AUDIO_STRETCH{{System::Main, "Core", "AudioStretch"}, false};
-const ConfigInfo<int> MAIN_AUDIO_STRETCH_LATENCY{{System::Main, "Core", "AudioStretchMaxLatency"},
-                                                 80};
 const ConfigInfo<std::string> MAIN_MEMCARD_A_PATH{{System::Main, "Core", "MemcardAPath"}, ""};
 const ConfigInfo<std::string> MAIN_MEMCARD_B_PATH{{System::Main, "Core", "MemcardBPath"}, ""};
 const ConfigInfo<std::string> MAIN_AGP_CART_A_PATH{{System::Main, "Core", "AgpCartAPath"}, ""};
