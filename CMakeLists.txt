@@ -25,7 +25,6 @@ endif()
 
 option(USE_SHARED_ENET "Use shared libenet if found rather than Dolphin's soon-to-compatibly-diverge version" OFF)
 option(USE_UPNP "Enables UPnP port mapping support" ON)
-option(ENABLE_QT "Enable Qt (Default)" ON)
 option(ENABLE_LTO "Enables Link Time Optimization" OFF)
 option(ENABLE_GENERIC "Enables generic build that should run on any little-endian host" OFF)
 option(ENABLE_HEADLESS "Enables running Dolphin as a headless variant" OFF)
@@ -364,7 +363,6 @@ if(ANDROID)
     set(ANDROID 0)
   endif()
   set(USE_UPNP 0)
-  set(ENABLE_QT 0)
   set(USE_DISCORD_PRESENCE 0)
 
   # We are cross compiling, search only the toolchain for libraries and includes
@@ -388,7 +386,6 @@ endif()
 
 if(ENABLE_HEADLESS)
   message(STATUS "Enabling Headless! Disabling GUI.")
-  set(ENABLE_QT 0)
   set(USE_DISCORD_PRESENCE 0)
   add_definitions(-DUSE_HEADLESS)
 endif()
