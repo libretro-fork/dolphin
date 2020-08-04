@@ -50,7 +50,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AutoUpdate.cpp" />
     <ClCompile Include="CommandLineParse.cpp" />
     <ClCompile Include="DiscordPresence.cpp" />
     <ClCompile Include="UICommon.cpp" />
@@ -62,7 +61,6 @@
     <ClCompile Include="GameFileCache.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AutoUpdate.h" />
     <ClInclude Include="CommandLineParse.h" />
     <ClInclude Include="DiscordPresence.h" />
     <ClInclude Include="UICommon.h" />

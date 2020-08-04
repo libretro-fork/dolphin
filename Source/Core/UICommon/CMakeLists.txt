@@ -1,5 +1,4 @@
 add_library(uicommon
-  AutoUpdate.cpp
   CommandLineParse.cpp
   Disassembler.cpp
   DiscordPresence.cpp
