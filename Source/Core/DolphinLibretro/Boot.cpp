@@ -66,9 +66,7 @@ bool retro_load_game(const struct retro_game_info* game)
   INFO_LOG(COMMON, "User Directory set to '%s'", user_dir.c_str());
   INFO_LOG(COMMON, "System Directory set to '%s'", sys_dir.c_str());
 
-  /* disable throttling emulation to match GetTargetRefreshRate() */
-  Core::SetIsThrottlerTempDisabled(true);
-  SConfig::GetInstance().m_EmulationSpeed = 0.0f;
+  SConfig::GetInstance().m_EmulationSpeed = 1.0f;
 
   // Fastmem installs custom exception handlers
   // it needs to be disabled when running in a debugger.

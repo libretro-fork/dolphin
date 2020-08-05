@@ -100,10 +100,6 @@ std::array<u64, 1000> s_emu_to_real_time_ring_buffer;
 size_t s_emu_to_real_time_index;
 std::mutex s_emu_to_real_time_mutex;
 
-// How much time was spent sleeping since the emulator started. Note: this does not need to be reset
-// at initialization (or ever), since only the "derivative" of that value really matters.
-u64 s_time_spent_sleeping;
-
 // DSP/CPU timeslicing.
 void DSPCallback(u64 userdata, s64 cyclesLate)
 {
@@ -171,37 +167,16 @@ void ThrottleCallback(u64 last_time, s64 cyclesLate)
   // Allow the GPU thread to sleep. Setting this flag here limits the wakeups to 1 kHz.
   Fifo::GpuMaySleep();
 
-  u64 time = Common::Timer::GetTimeUs();
-
-  s64 diff = last_time - time;
-  const SConfig& config = SConfig::GetInstance();
-  bool frame_limiter = config.m_EmulationSpeed > 0.0f && !Core::GetIsThrottlerTempDisabled();
+  u64 time       = Common::Timer::GetTimeUs();
   u32 next_event = GetTicksPerSecond() / 1000;
 
   {
     std::lock_guard<std::mutex> lk(s_emu_to_real_time_mutex);
-    s_emu_to_real_time_ring_buffer[s_emu_to_real_time_index] = time - s_time_spent_sleeping;
+    s_emu_to_real_time_ring_buffer[s_emu_to_real_time_index] = time;
     s_emu_to_real_time_index =
         (s_emu_to_real_time_index + 1) % s_emu_to_real_time_ring_buffer.size();
   }
 
-  if (frame_limiter)
-  {
-    if (config.m_EmulationSpeed != 1.0f)
-      next_event = u32(next_event * config.m_EmulationSpeed);
-    const s64 max_fallback = config.iTimingVariance * 1000;
-    if (abs(diff) > max_fallback)
-    {
-      DEBUG_LOG(COMMON, "system too %s, %ld ms skipped", diff < 0 ? "slow" : "fast",
-                abs(diff) - max_fallback);
-      last_time = time - max_fallback;
-    }
-    else if (diff > 1000)
-    {
-      Common::SleepCurrentThread(diff / 1000);
-      s_time_spent_sleeping += Common::Timer::GetTimeUs() - time;
-    }
-  }
   CoreTiming::ScheduleEvent(next_event - cyclesLate, et_Throttle, last_time + 1000);
 }
 }  // namespace
@@ -246,31 +221,6 @@ u64 GetFakeTimeBase()
 s64 GetLocalTimeRTCOffset()
 {
   return s_localtime_rtc_offset;
-}
-
-double GetEstimatedEmulationPerformance()
-{
-  u64 ts_now, ts_before;  // In microseconds
-  {
-    std::lock_guard<std::mutex> lk(s_emu_to_real_time_mutex);
-    size_t index_now = s_emu_to_real_time_index == 0 ? s_emu_to_real_time_ring_buffer.size() - 1 :
-                                                       s_emu_to_real_time_index - 1;
-    size_t index_before = s_emu_to_real_time_index;
-
-    ts_now = s_emu_to_real_time_ring_buffer[index_now];
-    ts_before = s_emu_to_real_time_ring_buffer[index_before];
-  }
-
-  if (ts_before == 0)
-  {
-    // Not enough data yet to estimate. We could technically provide an estimate based on a shorter
-    // time horizon, but it's not really worth it.
-    return 1.0;
-  }
-
-  u64 delta_us = ts_now - ts_before;
-  double emulated_us = s_emu_to_real_time_ring_buffer.size() * 1000.0;  // For each emulated ms.
-  return delta_us == 0 ? DBL_MAX : emulated_us / delta_us;
 }
 
 // split from Init to break a circular dependency between VideoInterface::Init and

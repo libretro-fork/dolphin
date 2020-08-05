@@ -180,8 +180,7 @@ void VideoConfig::VerifyValidity()
 
 bool VideoConfig::IsVSync() const
 {
-  return bVSync && !Core::GetIsThrottlerTempDisabled() &&
-         SConfig::GetInstance().m_EmulationSpeed == 1.0;
+  return true;
 }
 
 bool VideoConfig::UsingUberShaders() const

@@ -53,25 +53,7 @@ unsigned int Mixer::MixerFifo::Mix(short* samples, unsigned int numSamples,
   // advance indexR with sample position
   // remember fractional offset
 
-  float emulationspeed = SConfig::GetInstance().m_EmulationSpeed;
   float aid_sample_rate = static_cast<float>(m_input_sample_rate);
-  if (consider_framelimit && emulationspeed > 0.0f)
-  {
-    float numLeft = static_cast<float>(((indexW - indexR) & INDEX_MASK) / 2);
-
-    u32 low_waterwark = m_input_sample_rate * SConfig::GetInstance().iTimingVariance / 1000;
-    low_waterwark = std::min(low_waterwark, MAX_SAMPLES / 2);
-
-    m_numLeftI = (numLeft + m_numLeftI * (CONTROL_AVG - 1)) / CONTROL_AVG;
-    float offset = (m_numLeftI - low_waterwark) * CONTROL_FACTOR;
-    if (offset > MAX_FREQ_SHIFT)
-      offset = MAX_FREQ_SHIFT;
-    if (offset < -MAX_FREQ_SHIFT)
-      offset = -MAX_FREQ_SHIFT;
-
-    aid_sample_rate = (aid_sample_rate + offset) * emulationspeed;
-  }
-
   const u32 ratio = (u32)(65536.0f * aid_sample_rate / (float)m_mixer->m_sampleRate);
 
   s32 lvolume = m_LVolume.load();

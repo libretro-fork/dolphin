@@ -22,9 +22,6 @@ struct WindowSystemInfo;
 
 namespace Core
 {
-bool GetIsThrottlerTempDisabled();
-void SetIsThrottlerTempDisabled(bool disable);
-
 void Callback_VideoCopiedToXFB(bool video_update);
 
 enum class State

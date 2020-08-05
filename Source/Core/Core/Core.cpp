@@ -92,7 +92,6 @@ static std::thread s_emu_thread;
 static StateChangedCallbackFunc s_on_state_changed_callback;
 
 static std::thread s_cpu_thread;
-static bool s_is_throttler_temp_disabled = false;
 static bool s_frame_step = false;
 
 struct HostJob
@@ -104,16 +103,6 @@ static std::mutex s_host_jobs_lock;
 static std::queue<HostJob> s_host_jobs_queue;
 
 static thread_local bool tls_is_cpu_thread = false;
-
-bool GetIsThrottlerTempDisabled()
-{
-  return s_is_throttler_temp_disabled;
-}
-
-void SetIsThrottlerTempDisabled(bool disable)
-{
-  s_is_throttler_temp_disabled = disable;
-}
 
 void FrameUpdateOnCPUThread()
 {
