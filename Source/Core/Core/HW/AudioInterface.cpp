@@ -187,7 +187,7 @@ void RegisterMMIO(MMIO::Mapping* mmio, u32 base)
           if (SConfig::GetInstance().bWii)
             s_ais_sample_rate = tmp_ai_ctrl.AISFR ? 48000 : 32000;
           else
-            s_ais_sample_rate = tmp_ai_ctrl.AISFR ? 48043 : 32029;
+            s_ais_sample_rate = tmp_ai_ctrl.AISFR ? 48000 : 32000;
           g_sound_stream->GetMixer()->SetStreamInputSampleRate(s_ais_sample_rate);
           s_cpu_cycles_per_sample = SystemTimers::GetTicksPerSecond() / s_ais_sample_rate;
         }
@@ -199,7 +199,7 @@ void RegisterMMIO(MMIO::Mapping* mmio, u32 base)
           if (SConfig::GetInstance().bWii)
             s_aid_sample_rate = tmp_ai_ctrl.AIDFR ? 32000 : 48000;
           else
-            s_aid_sample_rate = tmp_ai_ctrl.AIDFR ? 32029 : 48043;
+            s_aid_sample_rate = tmp_ai_ctrl.AIDFR ? 32000 : 48000;
           g_sound_stream->GetMixer()->SetDMAInputSampleRate(s_aid_sample_rate);
         }
 
