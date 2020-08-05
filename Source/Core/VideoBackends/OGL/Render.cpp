@@ -807,11 +807,6 @@ Renderer::Renderer(std::unique_ptr<GLContext> main_gl_context)
 
 Renderer::~Renderer() = default;
 
-bool Renderer::IsHeadless() const
-{
-  return m_main_gl_context->IsHeadless();
-}
-
 bool Renderer::Initialize()
 {
   if (!::Renderer::Initialize())
@@ -1431,37 +1426,9 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
   TargetRectangle flipped_trc = GetTargetRectangle();
   std::swap(flipped_trc.top, flipped_trc.bottom);
 
-  // Skip screen rendering when running in headless mode.
-  if (!IsHeadless())
-  {
-    // Clear the framebuffer before drawing anything.
-    glBindFramebuffer(GL_FRAMEBUFFER, g_ogl_config.defaultFramebuffer);
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    m_current_framebuffer = nullptr;
-    m_current_framebuffer_width = m_backbuffer_width;
-    m_current_framebuffer_height = m_backbuffer_height;
-
-    // Copy the framebuffer to screen.
-    BlitScreen(sourceRc, flipped_trc, xfb_texture->GetRawTexIdentifier(),
-               xfb_texture->GetConfig().width, xfb_texture->GetConfig().height);
-
-    // Render OSD messages.
-    glViewport(0, 0, m_backbuffer_width, m_backbuffer_height);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    DrawDebugText();
-    OSD::DrawMessages();
-
-    // Swap the back and front buffers, presenting the image.
-    m_main_gl_context->Swap();
-  }
-  else
-  {
-    // Since we're not swapping in headless mode, ensure all commands are sent to the GPU.
-    // Otherwise the driver could batch several frames together.
-    glFlush();
-  }
+  // Since we're not swapping in headless mode, ensure all commands are sent to the GPU.
+  // Otherwise the driver could batch several frames together.
+  glFlush();
 
   // Was the size changed since the last frame?
   bool target_size_changed = CalculateTargetSize();

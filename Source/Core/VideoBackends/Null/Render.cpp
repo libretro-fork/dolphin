@@ -24,11 +24,6 @@ Renderer::~Renderer()
   UpdateActiveConfig();
 }
 
-bool Renderer::IsHeadless() const
-{
-  return true;
-}
-
 std::unique_ptr<AbstractTexture> Renderer::CreateTexture(const TextureConfig& config)
 {
   return std::make_unique<NullTexture>(config);

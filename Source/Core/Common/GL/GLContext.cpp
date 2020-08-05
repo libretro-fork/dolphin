@@ -15,11 +15,6 @@ bool GLContext::Initialize(void* display_handle, void* window_handle, bool stere
   return false;
 }
 
-bool GLContext::IsHeadless() const
-{
-  return true;
-}
-
 std::unique_ptr<GLContext> GLContext::CreateSharedContext()
 {
   return nullptr;

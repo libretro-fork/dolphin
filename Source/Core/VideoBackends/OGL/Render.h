@@ -87,8 +87,6 @@ public:
   Renderer(std::unique_ptr<GLContext> main_gl_context);
   ~Renderer() override;
 
-  bool IsHeadless() const override;
-
   bool Initialize() override;
   void Shutdown() override;
 

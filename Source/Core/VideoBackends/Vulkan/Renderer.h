@@ -35,8 +35,6 @@ public:
 
   static Renderer* GetInstance();
 
-  bool IsHeadless() const override;
-
   bool Initialize() override;
   void Shutdown() override;
 

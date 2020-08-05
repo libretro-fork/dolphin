@@ -31,11 +31,6 @@ SWRenderer::SWRenderer(std::unique_ptr<SWOGLWindow> window)
 {
 }
 
-bool SWRenderer::IsHeadless() const
-{
-  return m_window->IsHeadless();
-}
-
 std::unique_ptr<AbstractTexture> SWRenderer::CreateTexture(const TextureConfig& config)
 {
   return std::make_unique<SW::SWTexture>(config);
@@ -98,13 +93,6 @@ std::unique_ptr<AbstractPipeline> SWRenderer::CreatePipeline(const AbstractPipel
 void SWRenderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region, u64 ticks)
 {
   OSD::DoCallbacks(OSD::CallbackType::OnFrame);
-
-  if (!IsHeadless())
-  {
-    DrawDebugText();
-    m_window->ShowImage(texture, xfb_region);
-  }
-
   UpdateActiveConfig();
 }
 
