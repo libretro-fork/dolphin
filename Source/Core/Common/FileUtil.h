@@ -179,9 +179,6 @@ const std::string& GetUserPath(unsigned int dir_index);
 // Rebuilds internal directory structure to compensate for the new directory
 void SetUserPath(unsigned int dir_index, const std::string& path);
 
-// probably doesn't belong here
-std::string GetThemeDir(const std::string& theme_name);
-
 // Returns the path to where the sys file are
 std::string GetSysDirectory();
 

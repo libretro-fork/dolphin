@@ -141,7 +141,6 @@ struct SConfig
   bool bHideCursor = false;
   bool bUsePanicHandlers = true;
   bool bOnScreenDisplayMessages = true;
-  std::string theme_name;
 
   // Display settings
   std::string strFullscreenResolution;
