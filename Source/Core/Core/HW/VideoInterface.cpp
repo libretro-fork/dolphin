@@ -710,7 +710,7 @@ static void BeginField(FieldType field, u64 ticks)
       xfbAddr -= fbStride * 2;
   }
 
-  LogField(field, xfbAddr);
+  //LogField(field, xfbAddr);
 
   // This assumes the game isn't going to change the VI registers while a
   // frame is scanning out.
