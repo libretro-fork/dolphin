@@ -50,7 +50,6 @@
 #include "VideoCommon/CPMemory.h"
 #include "VideoCommon/CommandProcessor.h"
 #include "VideoCommon/Debugger.h"
-#include "VideoCommon/FPSCounter.h"
 #include "VideoCommon/FramebufferManagerBase.h"
 #include "VideoCommon/ImageWrite.h"
 #include "VideoCommon/OnScreenDisplay.h"
@@ -238,31 +237,6 @@ bool Renderer::CheckForHostConfigChanges()
 void Renderer::DrawDebugText()
 {
   std::string final_yellow, final_cyan;
-
-  if (g_ActiveConfig.bShowFPS || SConfig::GetInstance().m_ShowFrameCount)
-  {
-    if (g_ActiveConfig.bShowFPS)
-      final_cyan += StringFromFormat("FPS: %.2f", m_fps_counter.GetFPS());
-
-    if (g_ActiveConfig.bShowFPS && SConfig::GetInstance().m_ShowFrameCount)
-      final_cyan += " - ";
-    if (SConfig::GetInstance().m_ShowFrameCount)
-    {
-      final_cyan += StringFromFormat("Frame: %" PRIu64, Movie::GetCurrentFrame());
-      if (Movie::IsPlayingInput())
-        final_cyan += StringFromFormat("\nInput: %" PRIu64 " / %" PRIu64,
-                                       Movie::GetCurrentInputCount(), Movie::GetTotalInputCount());
-    }
-
-    final_cyan += "\n";
-    final_yellow += "\n";
-  }
-
-  if (SConfig::GetInstance().m_ShowLag)
-  {
-    final_cyan += StringFromFormat("Lag: %" PRIu64 "\n", Movie::GetCurrentLagCount());
-    final_yellow += "\n";
-  }
 
   if (SConfig::GetInstance().m_ShowInputDisplay)
   {
@@ -687,8 +661,6 @@ void Renderer::Swap(u32 xfbAddr, u32 fbWidth, u32 fbStride, u32 fbHeight, const 
       // Update the window size based on the frame that was just rendered.
       // Due to depending on guest state, we need to call this every frame.
       SetWindowSize(texture_config.width, texture_config.height);
-
-      m_fps_counter.Update();
 
       frameCount++;
       GFX_DEBUGGER_PAUSE_AT(NEXT_FRAME, true);

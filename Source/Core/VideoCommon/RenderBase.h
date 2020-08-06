@@ -29,7 +29,6 @@
 #include "Common/MathUtil.h"
 #include "VideoCommon/AsyncShaderCompiler.h"
 #include "VideoCommon/BPMemory.h"
-#include "VideoCommon/FPSCounter.h"
 #include "VideoCommon/RenderState.h"
 #include "VideoCommon/TextureConfig.h"
 #include "VideoCommon/VideoCommon.h"
@@ -224,8 +223,6 @@ protected:
   int m_backbuffer_height = 0;
   AbstractTextureFormat m_backbuffer_format = AbstractTextureFormat::Undefined;
   TargetRectangle m_target_rectangle = {};
-
-  FPSCounter m_fps_counter;
 
   std::unique_ptr<PostProcessingShaderImplementation> m_post_processor;
 

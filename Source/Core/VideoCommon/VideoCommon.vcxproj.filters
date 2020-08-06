@@ -92,9 +92,6 @@
     <ClCompile Include="VertexShaderManager.cpp">
       <Filter>Shader Managers</Filter>
     </ClCompile>
-    <ClCompile Include="FPSCounter.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
     <ClCompile Include="HiresTextures.cpp">
       <Filter>Util</Filter>
     </ClCompile>
@@ -271,9 +268,6 @@
     </ClInclude>
     <ClInclude Include="VertexShaderManager.h">
       <Filter>Shader Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="FPSCounter.h">
-      <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="HiresTextures.h">
       <Filter>Util</Filter>
