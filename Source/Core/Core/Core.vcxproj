@@ -590,9 +590,6 @@
     <ProjectReference Include="$(CoreDir)VideoCommon\VideoCommon.vcxproj">
       <Project>{3de9ee35-3e91-4f27-a014-2866ad8c3fe3}</Project>
     </ProjectReference>
-    <ProjectReference Include="$(ExternalsDir)cubeb\msvc\cubeb.vcxproj">
-      <Project>{8ea11166-6512-44fc-b7a5-a4d1ecc81170}</Project>
-    </ProjectReference>
     <ProjectReference Include="$(ExternalsDir)pugixml\pugixml.vcxproj">
       <Project>{38fee76f-f347-484b-949c-b4649381cffb}</Project>
     </ProjectReference>

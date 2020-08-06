@@ -9,9 +9,6 @@
 #include "Common/CommonTypes.h"
 #include "Core/HW/EXI/EXI_Device.h"
 
-struct cubeb;
-struct cubeb_stream;
-
 namespace ExpansionInterface
 {
 class CEXIMic : public IEXIDevice
@@ -60,7 +57,7 @@ private:
     };
   };
 
-  static long DataCallback(cubeb_stream* stream, void* user_data, const void* input_buffer,
+  static long DataCallback(void* stream_data, void* user_data, const void* input_buffer,
                            void* output_buffer, long nframes);
 
   void TransferByte(u8& byte) override;
@@ -79,10 +76,6 @@ private:
   // to determine if interrupt should be raised
   u64 next_int_ticks;
   void UpdateNextInterruptTicks();
-
-  // Streaming input interface
-  std::shared_ptr<cubeb> m_cubeb_ctx = nullptr;
-  cubeb_stream* m_cubeb_stream = nullptr;
 
   UStatus status;
 

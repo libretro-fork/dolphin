@@ -281,7 +281,6 @@ target_link_libraries(core
 PUBLIC
   audiocommon
   common
-  cubeb
   discio
   enet
   inputcommon
