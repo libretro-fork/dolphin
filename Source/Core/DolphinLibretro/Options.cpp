@@ -147,7 +147,7 @@ bool Option<T>::Updated()
 
 Option<int> efbScale("dolphin_efb_scale", "EFB Scale", 1,
                      {"x1 (640 x 528)", "x2 (1280 x 1056)", "x3 (1920 x 1584)", "x4 (2560 * 2112)",
-                      "x5 (3200 x 2640)", "x6 (3840 x 3168)", "x7 (4480 x 3696)", "x8 (5120 x 4224)", "x9 (5760 x 4752)", "x10 (6400 x 5280)"});
+                      "x5 (3200 x 2640)", "x6 (3840 x 3168)", "x7 (4480 x 3696)", "x8 (5120 x 4224)", "x9 (5760 x 4752)", "x10 (6400 x 5280)", "x11 (7040 x 5808)", "x12 (7680 x 6336)"});
 Option<int> irMode("dolphin_ir_mode", "Wiimote IR Mode", 1,
                      {"Right Stick controls pointer (relative)", "Right Stick controls pointer (absolute)", "Mouse controls pointer"});
 Option<int> irCenter("dolphin_ir_center", "Wiimote IR Center",
