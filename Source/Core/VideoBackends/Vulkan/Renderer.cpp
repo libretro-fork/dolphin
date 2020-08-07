@@ -65,6 +65,11 @@ Renderer* Renderer::GetInstance()
   return static_cast<Renderer*>(g_renderer.get());
 }
 
+bool Renderer::IsHeadless() const
+{
+  return m_swap_chain == nullptr;
+}
+
 bool Renderer::Initialize()
 {
   if (!::Renderer::Initialize())

@@ -23,6 +23,8 @@ public:
 
   StateCache& GetStateCache() { return m_state_cache; }
 
+  bool IsHeadless() const override;
+
   std::unique_ptr<AbstractTexture> CreateTexture(const TextureConfig& config) override;
   std::unique_ptr<AbstractStagingTexture>
   CreateStagingTexture(StagingTextureType type, const TextureConfig& config) override;

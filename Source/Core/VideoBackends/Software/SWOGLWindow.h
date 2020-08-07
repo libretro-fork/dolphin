@@ -22,6 +22,7 @@ public:
   ~SWOGLWindow();
 
   GLContext* GetContext() const { return m_gl_context.get(); }
+  bool IsHeadless() const;
 
   // Will be printed on the *next* image
   void PrintText(const std::string& text, int x, int y, u32 color);

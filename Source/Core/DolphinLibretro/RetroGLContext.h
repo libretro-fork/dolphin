@@ -12,6 +12,7 @@ class RetroGLContext : public ::GLContext
 public:
   void Swap() override;
   void* GetFuncAddress(const std::string& name) override;
+  bool IsHeadless() const override { return false; }
 
 protected:
   virtual bool Initialize(void* display_handle, void* window_handle,

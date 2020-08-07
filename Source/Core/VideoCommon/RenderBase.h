@@ -76,6 +76,8 @@ public:
 
   using ClearColor = std::array<float, 4>;
 
+  virtual bool IsHeadless() const = 0;
+
   virtual bool Initialize();
   virtual void Shutdown();
 

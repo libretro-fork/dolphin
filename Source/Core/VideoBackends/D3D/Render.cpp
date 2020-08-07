@@ -213,6 +213,11 @@ void Renderer::Create3DVisionTexture(int width, int height)
                            DXGI_FORMAT_R8G8B8A8_UNORM, 1, 1, &sys_data);
 }
 
+bool Renderer::IsHeadless() const
+{
+  return D3D::swapchain == nullptr;
+}
+
 std::unique_ptr<AbstractTexture> Renderer::CreateTexture(const TextureConfig& config)
 {
   return std::make_unique<DXTexture>(config);

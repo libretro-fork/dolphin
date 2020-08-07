@@ -366,6 +366,11 @@ float Renderer::CalculateDrawAspectRatio() const
   }
 }
 
+bool Renderer::IsHeadless() const
+{
+  return true;
+}
+
 void Renderer::ChangeSurface(void* new_surface_handle)
 {
   std::lock_guard<std::mutex> lock(m_swap_mutex);

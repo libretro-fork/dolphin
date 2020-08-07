@@ -28,6 +28,11 @@ std::unique_ptr<SWOGLWindow> SWOGLWindow::Create(const WindowSystemInfo& wsi)
   return window;
 }
 
+bool SWOGLWindow::IsHeadless() const
+{
+  return m_gl_context->IsHeadless();
+}
+
 bool SWOGLWindow::Initialize(const WindowSystemInfo& wsi)
 {
   m_gl_context = GLContext::Create(wsi);
