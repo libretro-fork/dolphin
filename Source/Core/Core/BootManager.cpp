@@ -72,6 +72,7 @@ public:
 
 private:
   bool valid;
+  bool bARAMHack;
   bool bCPUThread;
   bool bJITFollowBranch;
   bool bEnableCheats;
@@ -249,6 +250,7 @@ bool BootCore(std::unique_ptr<BootParameters> boot, const WindowSystemInfo& wsi)
     IniFile::Section* dsp_section = game_ini.GetOrCreateSection("DSP");
     IniFile::Section* controls_section = game_ini.GetOrCreateSection("Controls");
 
+    core_section->Get("ARAMHack",  &StartUp.bARAMHack,  StartUp.bARAMHack);
     core_section->Get("CPUThread", &StartUp.bCPUThread, StartUp.bCPUThread);
     core_section->Get("JITFollowBranch", &StartUp.bJITFollowBranch, StartUp.bJITFollowBranch);
     StartUp.bEnableCheats = Libretro::Options::cheatsEnabled;

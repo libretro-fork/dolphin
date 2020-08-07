@@ -76,6 +76,7 @@ bool retro_load_game(const struct retro_game_info* game)
   SConfig::GetInstance().cpu_core = Libretro::Options::cpu_core;
   SConfig::GetInstance().SelectedLanguage = (int)(DiscIO::Language)Libretro::Options::Language - 1;
   SConfig::GetInstance().bFastDiscSpeed = true;
+  SConfig::GetInstance().bARAMHack  = false;
   SConfig::GetInstance().bCPUThread = true;
   SConfig::GetInstance().bEMUThread = false;
   SConfig::GetInstance().bBootToPause = true;

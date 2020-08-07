@@ -104,6 +104,7 @@ struct SConfig
   bool bAccurateNaNs = false;
 
   int iTimingVariance = 40;  // in milli secounds
+  bool bARAMHack  = false;
   bool bCPUThread = true;
   bool bEMUThread = true;
   bool bDSPThread = false;

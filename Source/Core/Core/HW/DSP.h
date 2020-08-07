@@ -59,7 +59,7 @@ union UDSPControl
   UDSPControl(u16 hex = 0) : Hex(hex) {}
 };
 
-void Init(bool hle);
+void Init(bool hle, bool aram_hack);
 void Reinit(bool hle);
 void Shutdown();
 

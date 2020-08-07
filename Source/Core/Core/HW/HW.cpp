@@ -42,7 +42,7 @@ void Init()
   ProcessorInterface::Init();
   ExpansionInterface::Init();  // Needs to be initialized before Memory
   Memory::Init();
-  DSP::Init(SConfig::GetInstance().bDSPHLE);
+  DSP::Init(SConfig::GetInstance().bDSPHLE, SConfig::GetInstance().bARAMHack);
   DVDInterface::Init();
   GPFifo::Init();
   CPU::Init(SConfig::GetInstance().cpu_core);

@@ -138,6 +138,8 @@ static u16 s_AR_MODE;
 static u16 s_AR_REFRESH;
 static int s_dsp_slice = 0;
 
+static bool s_ARAM_HACK = false;
+
 static std::unique_ptr<DSPEmulator> s_dsp_emulator;
 
 static bool s_dsp_is_lle = false;
@@ -178,8 +180,9 @@ DSPEmulator* GetDSPEmulator()
   return s_dsp_emulator.get();
 }
 
-void Init(bool hle)
+void Init(bool hle, bool aram_hack)
 {
+  s_ARAM_HACK    = aram_hack;
   Reinit(hle);
   s_et_GenerateDSPInterrupt = CoreTiming::RegisterEvent("DSPint", GenerateDSPInterrupt);
   s_et_CompleteARAM = CoreTiming::RegisterEvent("ARAMint", CompleteARAM);
@@ -188,7 +191,7 @@ void Init(bool hle)
 void Reinit(bool hle)
 {
   s_dsp_emulator = CreateDSPEmulator(hle);
-  s_dsp_is_lle = s_dsp_emulator->IsLLE();
+  s_dsp_is_lle   = s_dsp_emulator->IsLLE();
 
   if (SConfig::GetInstance().bWii)
   {
@@ -475,6 +478,8 @@ void UpdateAudioDMA()
 static void Do_ARAM_DMA()
 {
   s_dspState.DMAState = 1;
+  if (s_ARAM_HACK)
+     GenerateDSPInterrupt(INT_ARAM);
 
   // ARAM DMA transfer rate has been measured on real hw
   int ticksToTransfer = (s_arDMA.Cnt.count / 32) * 246;
