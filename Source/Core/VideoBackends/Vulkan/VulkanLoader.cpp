@@ -15,9 +15,7 @@
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
 #include <Windows.h>
-#elif defined(VK_USE_PLATFORM_XLIB_KHR) || defined(VK_USE_PLATFORM_XCB_KHR) ||                     \
-    defined(VK_USE_PLATFORM_ANDROID_KHR) || defined(VK_USE_PLATFORM_MACOS_MVK) ||                  \
-    defined(USE_HEADLESS)
+#else
 #include <dlfcn.h>
 #endif
 
@@ -100,10 +98,7 @@ void UnloadVulkanLibrary()
   vulkan_module = nullptr;
 }
 
-#elif defined(VK_USE_PLATFORM_XLIB_KHR) || defined(VK_USE_PLATFORM_XCB_KHR) ||                     \
-    defined(VK_USE_PLATFORM_ANDROID_KHR) || defined(VK_USE_PLATFORM_MACOS_MVK) ||                  \
-    defined(USE_HEADLESS)
-
+#else
 static void* vulkan_module;
 static std::atomic_int vulkan_module_ref_count = {0};
 
@@ -180,21 +175,6 @@ void UnloadVulkanLibrary()
   dlclose(vulkan_module);
   vulkan_module = nullptr;
 }
-
-#else
-
-//#warning Unknown platform, not compiling loader.
-
-bool LoadVulkanLibrary()
-{
-  return false;
-}
-
-void UnloadVulkanLibrary()
-{
-  ResetVulkanLibraryFunctionPointers();
-}
-
 #endif
 
 bool LoadVulkanInstanceFunctions(VkInstance instance)

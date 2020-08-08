@@ -364,7 +364,6 @@ if(ANDROID)
 endif()
 
 if(LIBRETRO)
-  set(ENABLE_HEADLESS 1)
   set(USE_UPNP 0)
   set(ENABLE_LLVM 0)
   add_definitions(-D__LIBRETRO__)
