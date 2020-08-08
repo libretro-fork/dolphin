@@ -10,28 +10,7 @@
 #include <mutex>
 #include <vector>
 
-#include "Common/WindowSystemInfo.h"
 #include "InputCommon/ControllerInterface/Device.h"
-
-// enable disable sources
-#ifndef __LIBRETRO__
-#ifdef _WIN32
-#define CIFACE_USE_XINPUT
-#define CIFACE_USE_DINPUT
-#endif
-#if defined(HAVE_X11) && HAVE_X11
-#define CIFACE_USE_XLIB
-#endif
-#if defined(__APPLE__)
-#define CIFACE_USE_OSX
-#endif
-#if defined(HAVE_LIBEVDEV) && defined(HAVE_LIBUDEV)
-#define CIFACE_USE_EVDEV
-#endif
-#if defined(USE_PIPES)
-#define CIFACE_USE_PIPES
-#endif
-#endif
 
 //
 // ControllerInterface
@@ -43,7 +22,7 @@ class ControllerInterface : public ciface::Core::DeviceContainer
 {
 public:
   ControllerInterface() : m_is_init(false) {}
-  void Initialize(const WindowSystemInfo& wsi);
+  void Initialize();
   void ChangeWindow(void* hwnd);
   void RefreshDevices();
   void Shutdown();
@@ -60,7 +39,6 @@ private:
   mutable std::mutex m_callbacks_mutex;
   bool m_is_init;
   std::atomic<bool> m_is_populating_devices{false};
-  WindowSystemInfo m_wsi;
 };
 
 extern ControllerInterface g_controller_interface;

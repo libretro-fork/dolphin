@@ -469,7 +469,7 @@ void EmuThread(WindowSystemInfo wsi)
   bool init_controllers = false;
   if (!g_controller_interface.IsInit())
   {
-    g_controller_interface.Initialize(wsi);
+    g_controller_interface.Initialize();
     Pad::Initialize();
     Keyboard::Initialize();
     init_controllers = true;

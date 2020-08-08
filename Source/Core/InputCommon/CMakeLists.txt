@@ -28,75 +28,9 @@ target_link_libraries(inputcommon PUBLIC
   common
 )
 
-if(WIN32)
-  target_sources(inputcommon PRIVATE
-    ControllerInterface/DInput/DInput.cpp
-    ControllerInterface/DInput/DInputJoystick.cpp
-    ControllerInterface/DInput/DInputKeyboardMouse.cpp
-    ControllerInterface/DInput/XInputFilter.cpp
-    ControllerInterface/XInput/XInput.cpp
-    ControllerInterface/ForceFeedback/ForceFeedbackDevice.cpp
-  )
-  target_link_libraries(inputcommon
-    PRIVATE
-    dinput8
-  )
-elseif(APPLE)
-  target_sources(inputcommon PRIVATE
-    ControllerInterface/OSX/OSX.mm
-    ControllerInterface/OSX/OSXJoystick.mm
-    ControllerInterface/Quartz/Quartz.mm
-    ControllerInterface/Quartz/QuartzKeyboardAndMouse.mm
-    ControllerInterface/ForceFeedback/ForceFeedbackDevice.cpp
-  )
-  target_link_libraries(inputcommon PRIVATE
-    ${COREFOUNDATION_LIBRARY}
-    ${CARBON_LIBRARY}
-    ${COCOA_LIBRARY}
-    ${FORCEFEEDBACK_LIBRARY}
-    ${IOK_LIBRARY}
-  )
-elseif(X11_FOUND)
-  target_sources(inputcommon PRIVATE
-    ControllerInterface/Xlib/XInput2.cpp
-  )
-  target_link_libraries(inputcommon PUBLIC
-    ${X11_LIBRARIES}
-    ${X11_INPUT_LIBRARIES}
-  )
-elseif(ANDROID)
-  target_compile_definitions(inputcommon PRIVATE -DCIFACE_USE_ANDROID)
-  target_sources(inputcommon PRIVATE
-    ControllerInterface/Android/Android.cpp
-  )
-endif()
-
 if(ANDROID)
   target_sources(inputcommon PRIVATE GCAdapter_Android.cpp)
 else()
   target_sources(inputcommon PRIVATE GCAdapter.cpp)
   target_link_libraries(inputcommon PUBLIC ${LIBUSB_LIBRARIES})
-endif()
-
-if(LIBEVDEV_FOUND AND LIBUDEV_FOUND)
-  target_sources(inputcommon
-  PRIVATE
-    ControllerInterface/evdev/evdev.cpp
-  )
-  target_include_directories(inputcommon
-  PRIVATE
-    ${LIBEVDEV_INCLUDE_DIR}
-    ${LIBUDEV_INCLUDE_DIR}
-  )
-  target_link_libraries(inputcommon
-  PRIVATE
-    ${LIBEVDEV_LIBRARY}
-    ${LIBUDEV_LIBRARY}
-  )
-endif()
-
-if(UNIX)
-  target_sources(inputcommon PRIVATE
-    ControllerInterface/Pipes/Pipes.cpp
-  )
 endif()

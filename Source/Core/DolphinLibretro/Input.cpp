@@ -38,7 +38,6 @@ namespace Libretro
 {
 namespace Video
 {
-extern WindowSystemInfo wsi;
 }
 
 extern retro_environment_t environ_cb;
@@ -383,7 +382,7 @@ void Init()
 {
   environ_cb(RETRO_ENVIRONMENT_GET_RUMBLE_INTERFACE, &rumble);
 
-  g_controller_interface.Initialize(Libretro::Video::wsi);
+  g_controller_interface.Initialize();
 
   g_controller_interface.AddDevice(std::make_shared<Device>(RETRO_DEVICE_KEYBOARD, 0));
 

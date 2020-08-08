@@ -8,29 +8,6 @@
 
 #include "Common/Logging/Log.h"
 
-#ifdef CIFACE_USE_XINPUT
-#include "InputCommon/ControllerInterface/XInput/XInput.h"
-#endif
-#ifdef CIFACE_USE_DINPUT
-#include "InputCommon/ControllerInterface/DInput/DInput.h"
-#endif
-#ifdef CIFACE_USE_XLIB
-#include "InputCommon/ControllerInterface/Xlib/XInput2.h"
-#endif
-#ifdef CIFACE_USE_OSX
-#include "InputCommon/ControllerInterface/OSX/OSX.h"
-#include "InputCommon/ControllerInterface/Quartz/Quartz.h"
-#endif
-#ifdef CIFACE_USE_ANDROID
-#include "InputCommon/ControllerInterface/Android/Android.h"
-#endif
-#ifdef CIFACE_USE_EVDEV
-#include "InputCommon/ControllerInterface/evdev/evdev.h"
-#endif
-#ifdef CIFACE_USE_PIPES
-#include "InputCommon/ControllerInterface/Pipes/Pipes.h"
-#endif
-
 ControllerInterface g_controller_interface;
 
 //
@@ -38,37 +15,12 @@ ControllerInterface g_controller_interface;
 //
 // Detect devices and inputs outputs / will make refresh function later
 //
-void ControllerInterface::Initialize(const WindowSystemInfo& wsi)
+void ControllerInterface::Initialize()
 {
   if (m_is_init)
     return;
 
-  m_wsi = wsi;
   m_is_populating_devices = true;
-
-#ifdef CIFACE_USE_DINPUT
-// nothing needed
-#endif
-#ifdef CIFACE_USE_XINPUT
-  ciface::XInput::Init();
-#endif
-#ifdef CIFACE_USE_XLIB
-// nothing needed
-#endif
-#ifdef CIFACE_USE_OSX
-  if (m_wsi.type == WindowSystemType::MacOS)
-    ciface::OSX::Init(wsi.render_surface);
-// nothing needed for Quartz
-#endif
-#ifdef CIFACE_USE_ANDROID
-// nothing needed
-#endif
-#ifdef CIFACE_USE_EVDEV
-  ciface::evdev::Init();
-#endif
-#ifdef CIFACE_USE_PIPES
-// nothing needed
-#endif
 
   m_is_init = true;
   RefreshDevices();
@@ -79,7 +31,6 @@ void ControllerInterface::ChangeWindow(void* hwnd)
   if (!m_is_init)
     return;
 
-  m_wsi.render_surface = hwnd;
   RefreshDevices();
 }
 
@@ -96,34 +47,6 @@ void ControllerInterface::RefreshDevices()
 #endif
 
   m_is_populating_devices = true;
-
-#ifdef CIFACE_USE_DINPUT
-  if (m_wsi.type == WindowSystemType::Windows)
-    ciface::DInput::PopulateDevices(reinterpret_cast<HWND>(m_wsi.render_surface));
-#endif
-#ifdef CIFACE_USE_XINPUT
-  ciface::XInput::PopulateDevices();
-#endif
-#ifdef CIFACE_USE_XLIB
-  if (m_wsi.type == WindowSystemType::X11)
-    ciface::XInput2::PopulateDevices(m_wsi.render_surface);
-#endif
-#ifdef CIFACE_USE_OSX
-  if (m_wsi.type == WindowSystemType::MacOS)
-  {
-    ciface::OSX::PopulateDevices(m_wsi.render_surface);
-    ciface::Quartz::PopulateDevices(m_wsi.render_surface);
-  }
-#endif
-#ifdef CIFACE_USE_ANDROID
-  ciface::Android::PopulateDevices();
-#endif
-#ifdef CIFACE_USE_EVDEV
-  ciface::evdev::PopulateDevices();
-#endif
-#ifdef CIFACE_USE_PIPES
-  ciface::Pipes::PopulateDevices();
-#endif
 
   m_is_populating_devices = false;
   InvokeDevicesChangedCallbacks();
@@ -151,26 +74,6 @@ void ControllerInterface::Shutdown()
 
     m_devices.clear();
   }
-
-#ifdef CIFACE_USE_XINPUT
-  ciface::XInput::DeInit();
-#endif
-#ifdef CIFACE_USE_DINPUT
-// nothing needed
-#endif
-#ifdef CIFACE_USE_XLIB
-// nothing needed
-#endif
-#ifdef CIFACE_USE_OSX
-  ciface::OSX::DeInit();
-  ciface::Quartz::DeInit();
-#endif
-#ifdef CIFACE_USE_ANDROID
-// nothing needed
-#endif
-#ifdef CIFACE_USE_EVDEV
-  ciface::evdev::Shutdown();
-#endif
 
   m_is_init = false;
 }

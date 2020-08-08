@@ -55,14 +55,8 @@
     <ClCompile Include="ControllerEmu\Setting\NumericSetting.cpp" />
     <ClCompile Include="ControllerInterface\ControllerInterface.cpp" />
     <ClCompile Include="ControllerInterface\Device.cpp" />
-    <ClCompile Include="ControllerInterface\DInput\DInput.cpp" />
-    <ClCompile Include="ControllerInterface\DInput\DInputJoystick.cpp" />
-    <ClCompile Include="ControllerInterface\DInput\DInputKeyboardMouse.cpp" />
-    <ClCompile Include="ControllerInterface\DInput\XInputFilter.cpp" />
     <ClCompile Include="ControlReference\ControlReference.cpp" />
     <ClCompile Include="ControlReference\ExpressionParser.cpp" />
-    <ClCompile Include="ControllerInterface\ForceFeedback\ForceFeedbackDevice.cpp" />
-    <ClCompile Include="ControllerInterface\XInput\XInput.cpp" />
     <ClCompile Include="GCAdapter.cpp">
       <!--
       Disable "nonstandard extension used : zero-sized array in struct/union" warning,
@@ -94,15 +88,8 @@
     <ClInclude Include="ControllerEmu\Setting\Setting.h" />
     <ClInclude Include="ControllerInterface\ControllerInterface.h" />
     <ClInclude Include="ControllerInterface\Device.h" />
-    <ClInclude Include="ControllerInterface\DInput\DInput.h" />
-    <ClInclude Include="ControllerInterface\DInput\DInput8.h" />
-    <ClInclude Include="ControllerInterface\DInput\DInputJoystick.h" />
-    <ClInclude Include="ControllerInterface\DInput\DInputKeyboardMouse.h" />
-    <ClInclude Include="ControllerInterface\DInput\XInputFilter.h" />
     <ClInclude Include="ControlReference\ControlReference.h" />
     <ClInclude Include="ControlReference\ExpressionParser.h" />
-    <ClInclude Include="ControllerInterface\ForceFeedback\ForceFeedbackDevice.h" />
-    <ClInclude Include="ControllerInterface\XInput\XInput.h" />
     <ClInclude Include="GCAdapter.h" />
     <ClInclude Include="GCPadStatus.h" />
     <ClInclude Include="InputConfig.h" />
