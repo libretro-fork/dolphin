@@ -21,9 +21,6 @@
 #include "InputCommon/ControllerInterface/OSX/OSX.h"
 #include "InputCommon/ControllerInterface/Quartz/Quartz.h"
 #endif
-#ifdef CIFACE_USE_SDL
-#include "InputCommon/ControllerInterface/SDL/SDL.h"
-#endif
 #ifdef CIFACE_USE_ANDROID
 #include "InputCommon/ControllerInterface/Android/Android.h"
 #endif
@@ -62,9 +59,6 @@ void ControllerInterface::Initialize(const WindowSystemInfo& wsi)
   if (m_wsi.type == WindowSystemType::MacOS)
     ciface::OSX::Init(wsi.render_surface);
 // nothing needed for Quartz
-#endif
-#ifdef CIFACE_USE_SDL
-  ciface::SDL::Init();
 #endif
 #ifdef CIFACE_USE_ANDROID
 // nothing needed
@@ -121,9 +115,6 @@ void ControllerInterface::RefreshDevices()
     ciface::Quartz::PopulateDevices(m_wsi.render_surface);
   }
 #endif
-#ifdef CIFACE_USE_SDL
-  ciface::SDL::PopulateDevices();
-#endif
 #ifdef CIFACE_USE_ANDROID
   ciface::Android::PopulateDevices();
 #endif
@@ -173,9 +164,6 @@ void ControllerInterface::Shutdown()
 #ifdef CIFACE_USE_OSX
   ciface::OSX::DeInit();
   ciface::Quartz::DeInit();
-#endif
-#ifdef CIFACE_USE_SDL
-  ciface::SDL::DeInit();
 #endif
 #ifdef CIFACE_USE_ANDROID
 // nothing needed

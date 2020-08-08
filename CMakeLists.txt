@@ -36,13 +36,6 @@ option(FASTLOG "Enable all logs" OFF)
 option(GDBSTUB "Enable gdb stub for remote debugging." OFF)
 option(OPROFILING "Enable profiling" OFF)
 
-# Enable SDL for default on operating systems that aren't OSX, Android, Linux or Windows.
-if(NOT APPLE AND NOT ANDROID AND NOT CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT MSVC)
-  option(ENABLE_SDL "Enables SDL as a generic controller backend" ON)
-else()
-  option(ENABLE_SDL "Enables SDL as a generic controller backend" OFF)
-endif()
-
 if(APPLE)
   option(OSX_USE_DEFAULT_SEARCH_PATH "Don't prioritize system library paths" OFF)
   option(SKIP_POSTPROCESS_BUNDLE "Skip postprocessing bundle for redistributability" OFF)
