@@ -91,10 +91,6 @@ void Idle();
 // Clear all pending events. This should ONLY be done on exit or state load.
 void ClearPendingEvents();
 
-void LogPendingEvents();
-
-std::string GetScheduledEventsSummary();
-
 void AdjustEventQueueTimes(u32 new_ppc_clock, u32 old_ppc_clock);
 
 u32 GetFakeDecStartValue();

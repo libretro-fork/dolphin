@@ -1,5 +1,4 @@
 add_library(uicommon
-  CommandLineParse.cpp
   Disassembler.cpp
   GameFile.cpp
   GameFileCache.cpp

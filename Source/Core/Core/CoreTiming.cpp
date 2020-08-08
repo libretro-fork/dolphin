@@ -352,17 +352,6 @@ void Advance()
   PowerPC::CheckExternalExceptions();
 }
 
-void LogPendingEvents()
-{
-  auto clone = s_event_queue;
-  std::sort(clone.begin(), clone.end());
-  for (const Event& ev : clone)
-  {
-    INFO_LOG(POWERPC, "PENDING: Now: %" PRId64 " Pending: %" PRId64 " Type: %s", g.global_timer,
-             ev.time, ev.type->name->c_str());
-  }
-}
-
 // Should only be called from the CPU thread after the PPC clock has changed
 void AdjustEventQueueTimes(u32 new_ppc_clock, u32 old_ppc_clock)
 {
@@ -385,21 +374,6 @@ void Idle()
 
   s_idled_cycles += DowncountToCycles(PowerPC::ppcState.downcount);
   PowerPC::ppcState.downcount = 0;
-}
-
-std::string GetScheduledEventsSummary()
-{
-  std::string text = "Scheduled events\n";
-  text.reserve(1000);
-
-  auto clone = s_event_queue;
-  std::sort(clone.begin(), clone.end());
-  for (const Event& ev : clone)
-  {
-    text += StringFromFormat("%s : %" PRIi64 " %016" PRIx64 "\n", ev.type->name->c_str(), ev.time,
-                             ev.userdata);
-  }
-  return text;
 }
 
 u32 GetFakeDecStartValue()
