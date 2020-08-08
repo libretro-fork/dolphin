@@ -74,12 +74,6 @@ void AsyncRequests::PushEvent(const AsyncRequests::Event& event, bool blocking)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
 
-  if (m_passthrough)
-  {
-    HandleEvent(event);
-    return;
-  }
-
   m_empty.Clear();
   m_wake_me_up_again |= blocking;
 
@@ -151,10 +145,4 @@ void AsyncRequests::HandleEvent(const AsyncRequests::Event& e)
     g_perf_query->FlushResults();
     break;
   }
-}
-
-void AsyncRequests::SetPassthrough(bool enable)
-{
-  std::unique_lock<std::mutex> lock(m_mutex);
-  m_passthrough = enable;
 }

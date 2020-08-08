@@ -30,26 +30,6 @@
 #include "VideoCommon/Fifo.h"
 #include "VideoCommon/VideoConfig.h"
 
-#ifdef PERF_TEST
-static struct retro_perf_callback perf_cb;
-
-#define RETRO_PERFORMANCE_INIT(name)                                                               \
-  retro_perf_tick_t current_ticks;                                                                 \
-  static struct retro_perf_counter name = {#name};                                                 \
-  if (!name.registered)                                                                            \
-    perf_cb.perf_register(&(name));                                                                \
-  current_ticks = name.total
-
-#define RETRO_PERFORMANCE_START(name) perf_cb.perf_start(&(name))
-#define RETRO_PERFORMANCE_STOP(name)                                                               \
-  perf_cb.perf_stop(&(name));                                                                      \
-  current_ticks = name.total - current_ticks;
-#else
-#define RETRO_PERFORMANCE_INIT(name)
-#define RETRO_PERFORMANCE_START(name)
-#define RETRO_PERFORMANCE_STOP(name)
-#endif
-
 namespace Libretro
 {
 retro_environment_t environ_cb;
@@ -244,15 +224,8 @@ void retro_run(void)
     WiimoteReal::Initialize(Wiimote::InitializeMode::DO_NOT_WAIT_FOR_WIIMOTES);
   }
 
-  RETRO_PERFORMANCE_INIT(dolphin_main_func);
-  RETRO_PERFORMANCE_START(dolphin_main_func);
-
-  AsyncRequests::GetInstance()->SetEnable(true);
-  AsyncRequests::GetInstance()->SetPassthrough(false);
   Core::DoFrameStep();
   Fifo::RunGpuLoop();
-
-  RETRO_PERFORMANCE_STOP(dolphin_main_func);
 }
 
 size_t retro_serialize_size(void)

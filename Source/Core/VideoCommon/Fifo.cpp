@@ -298,7 +298,6 @@ void ResetVideoBuffer()
 void RunGpuLoop()
 {
   AsyncRequests::GetInstance()->SetEnable(true);
-  AsyncRequests::GetInstance()->SetPassthrough(false);
 
   s_gpu_mainloop.Run(
       [] {
@@ -395,9 +394,6 @@ void RunGpuLoop()
       100);
 
   AsyncRequests::GetInstance()->SetEnable(false);
-#ifndef __LIBRETRO__
-  AsyncRequests::GetInstance()->SetPassthrough(true);
-#endif
 }
 
 void FlushGpu()
