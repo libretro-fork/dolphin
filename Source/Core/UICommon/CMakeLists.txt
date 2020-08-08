@@ -1,7 +1,6 @@
 add_library(uicommon
   Disassembler.cpp
   GameFile.cpp
-  GameFileCache.cpp
   UICommon.cpp
   USBUtils.cpp
 )
