@@ -94,63 +94,6 @@ void Shutdown()
   Config::Shutdown();
 }
 
-void SetLocale(std::string locale_name)
-{
-  auto set_locale = [](const std::string& locale) {
-#ifdef __linux__
-    std::string adjusted_locale = locale;
-    if (!locale.empty())
-      adjusted_locale += ".UTF-8";
-#else
-    const std::string& adjusted_locale = locale;
-#endif
-
-    // setlocale sets the C locale, and global sets the C and C++ locales, so the call to setlocale
-    // would be redundant if it wasn't for not having any other good way to check whether
-    // the locale name is valid. (Constructing a std::locale object for an unsupported
-    // locale name throws std::runtime_error, and exception handling is disabled in Dolphin.)
-    if (!std::setlocale(LC_ALL, adjusted_locale.c_str()))
-      return false;
-    std::locale::global(std::locale(adjusted_locale));
-    return true;
-  };
-
-#ifdef _WIN32
-  constexpr char PREFERRED_SEPARATOR = '-';
-  constexpr char OTHER_SEPARATOR = '_';
-#else
-  constexpr char PREFERRED_SEPARATOR = '_';
-  constexpr char OTHER_SEPARATOR = '-';
-#endif
-
-  // Users who use a system language other than English are unlikely to prefer American date and
-  // time formats, so let's explicitly request "en_GB" if Dolphin's language is set to "en".
-  // (The settings window only allows setting "en", not anything like "en_US" or "en_GB".)
-  // Users who prefer the American formats are likely to have their system language set to en_US,
-  // and are thus likely to leave Dolphin's language as the default value "" (<System Language>).
-  if (locale_name == "en")
-    locale_name = "en_GB";
-
-  std::replace(locale_name.begin(), locale_name.end(), OTHER_SEPARATOR, PREFERRED_SEPARATOR);
-
-  // Use the specified locale if supported.
-  if (set_locale(locale_name))
-    return;
-
-  // Remove subcodes until we get a supported locale. If that doesn't give us a supported locale,
-  // "" is passed to set_locale in order to get the system default locale.
-  while (!locale_name.empty())
-  {
-    const size_t separator_index = locale_name.rfind(PREFERRED_SEPARATOR);
-    locale_name.erase(separator_index == std::string::npos ? 0 : separator_index);
-    if (set_locale(locale_name))
-      return;
-  }
-
-  // If none of the locales tried above are supported, we just keep using whatever locale is set
-  // (which is the classic locale by default).
-}
-
 void CreateDirectories()
 {
   File::CreateFullPath(File::GetUserPath(D_USER_IDX));
@@ -323,29 +266,6 @@ void SetUserDirectory(const std::string& custom_path)
   File::SetUserPath(D_USER_IDX, user_path);
 }
 
-void SaveWiimoteSources()
-{
-  std::string ini_filename = File::GetUserPath(D_CONFIG_IDX) + WIIMOTE_INI_NAME ".ini";
-
-  IniFile inifile;
-  inifile.Load(ini_filename);
-
-  for (unsigned int i = 0; i < MAX_WIIMOTES; ++i)
-  {
-    std::string secname("Wiimote");
-    secname += (char)('1' + i);
-    IniFile::Section& sec = *inifile.GetOrCreateSection(secname);
-
-    sec.Set("Source", (int)g_wiimote_sources[i]);
-  }
-
-  std::string secname("BalanceBoard");
-  IniFile::Section& sec = *inifile.GetOrCreateSection(secname);
-  sec.Set("Source", (int)g_wiimote_sources[WIIMOTE_BALANCE_BOARD]);
-
-  inifile.Save(ini_filename);
-}
-
 bool TriggerSTMPowerEvent()
 {
   const auto ios = IOS::HLE::GetIOS();
@@ -360,26 +280,6 @@ bool TriggerSTMPowerEvent()
   ProcessorInterface::PowerButton_Tap();
 
   return true;
-}
-
-std::string FormatSize(u64 bytes)
-{
-  // i18n: The symbol for the unit "bytes"
-  const char* const unit_symbols[] = {_trans("B"),   _trans("KiB"), _trans("MiB"), _trans("GiB"),
-                                      _trans("TiB"), _trans("PiB"), _trans("EiB")};
-
-  // Find largest power of 2 less than size.
-  // div 10 to get largest named unit less than size
-  // 10 == log2(1024) (number of B in a KiB, KiB in a MiB, etc)
-  // Max value is 63 / 10 = 6
-  const int unit = IntLog2(std::max<u64>(bytes, 1)) / 10;
-
-  // Don't need exact values, only 5 most significant digits
-  const double unit_size = std::pow(2, unit * 10);
-  std::stringstream ss;
-  ss << std::fixed << std::setprecision(2);
-  ss << bytes / unit_size << ' ' << GetStringT(unit_symbols[unit]);
-  return ss.str();
 }
 
 }  // namespace UICommon
