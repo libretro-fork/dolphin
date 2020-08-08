@@ -7,7 +7,6 @@
 #include <array>
 #include <cstddef>
 #include <memory>
-#include <tuple>
 
 #include "Common/CommonTypes.h"
 #include "VideoBackends/Vulkan/Constants.h"
