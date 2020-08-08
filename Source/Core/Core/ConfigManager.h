@@ -164,9 +164,6 @@ struct SConfig
 
   bool m_enable_signature_checks = true;
 
-  // Fifo Player related settings
-  bool bLoopFifoReplay = true;
-
   // Custom RTC
   bool bEnableCustomRTC;
   u32 m_customRTCValue;
@@ -332,7 +329,6 @@ private:
   void SaveDSPSettings(IniFile& ini);
   void SaveInputSettings(IniFile& ini);
   void SaveMovieSettings(IniFile& ini);
-  void SaveFifoPlayerSettings(IniFile& ini);
   void SaveNetworkSettings(IniFile& ini);
   void SaveAnalyticsSettings(IniFile& ini);
   void SaveBluetoothPassthroughSettings(IniFile& ini);
@@ -347,7 +343,6 @@ private:
   void LoadDSPSettings(IniFile& ini);
   void LoadInputSettings(IniFile& ini);
   void LoadMovieSettings(IniFile& ini);
-  void LoadFifoPlayerSettings(IniFile& ini);
   void LoadNetworkSettings(IniFile& ini);
   void LoadAnalyticsSettings(IniFile& ini);
   void LoadBluetoothPassthroughSettings(IniFile& ini);

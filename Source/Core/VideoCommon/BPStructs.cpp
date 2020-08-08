@@ -13,8 +13,6 @@
 #include "Common/Thread.h"
 #include "Core/ConfigManager.h"
 #include "Core/CoreTiming.h"
-#include "Core/FifoPlayer/FifoPlayer.h"
-#include "Core/FifoPlayer/FifoRecorder.h"
 #include "Core/HW/Memmap.h"
 #include "Core/HW/VideoInterface.h"
 
@@ -280,13 +278,6 @@ static void BPWritten(const BPCmd& bp)
         g_renderer->Swap(destAddr, destStride / 2, destStride / 2, height, srcRect,
                          CoreTiming::GetTicks());
       }
-      else
-      {
-        if (FifoPlayer::GetInstance().IsRunningWithFakeVideoInterfaceUpdates())
-        {
-          VideoInterface::FakeVIUpdate(destAddr, srcRect.GetWidth(), height);
-        }
-      }
     }
 
     // Clear the rectangular region after copying it.
@@ -310,9 +301,6 @@ static void BPWritten(const BPCmd& bp)
       addr = addr & 0x01FFFFFF;
 
     Memory::CopyFromEmu(texMem + tlutTMemAddr, addr, tlutXferCount);
-
-    if (g_bRecordFifoData)
-      FifoRecorder::GetInstance().UseMemory(addr, tlutXferCount, MemoryUpdate::TMEM);
 
     TextureCacheBase::InvalidateAllBindPoints();
 
@@ -533,9 +521,6 @@ static void BPWritten(const BPCmd& bp)
           bytes_read += TMEM_LINE_SIZE * 2;
         }
       }
-
-      if (g_bRecordFifoData)
-        FifoRecorder::GetInstance().UseMemory(src_addr, bytes_read, MemoryUpdate::TMEM);
 
       TextureCacheBase::InvalidateAllBindPoints();
     }

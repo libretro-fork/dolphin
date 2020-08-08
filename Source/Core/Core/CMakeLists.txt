@@ -61,12 +61,6 @@ add_library(core
   DSP/Interpreter/DSPIntMultiplier.cpp
   DSP/Interpreter/DSPIntTables.cpp
   DSP/Jit/DSPEmitterBase.cpp
-  FifoPlayer/FifoAnalyzer.cpp
-  FifoPlayer/FifoDataFile.cpp
-  FifoPlayer/FifoPlaybackAnalyzer.cpp
-  FifoPlayer/FifoPlayer.cpp
-  FifoPlayer/FifoRecordAnalyzer.cpp
-  FifoPlayer/FifoRecorder.cpp
   HLE/HLE.cpp
   HLE/HLE_Misc.cpp
   HLE/HLE_OS.cpp

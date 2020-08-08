@@ -11,9 +11,6 @@
 #include "Common/CommonTypes.h"
 #include "Common/MathUtil.h"
 
-// Global flag to signal if FifoRecorder is active.
-extern bool g_bRecordFifoData;
-
 // These are accurate (disregarding AA modes).
 enum
 {

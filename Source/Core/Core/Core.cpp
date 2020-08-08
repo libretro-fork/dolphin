@@ -41,7 +41,6 @@
 #include "Core/MemoryWatcher.h"
 #endif
 #include "Core/Boot/Boot.h"
-#include "Core/FifoPlayer/FifoPlayer.h"
 #include "Core/HLE/HLE.h"
 #include "Core/HW/CPU.h"
 #include "Core/HW/DSP.h"
@@ -335,39 +334,6 @@ static void CpuThread(const std::optional<std::string>& savestate_path, bool del
     EMM::UninstallExceptionHandler();
 }
 
-static void FifoPlayerThread(const std::optional<std::string>& savestate_path,
-                             bool delete_savestate)
-{
-  DeclareAsCPUThread();
-
-  const SConfig& _CoreParameter = SConfig::GetInstance();
-  if (_CoreParameter.bCPUThread)
-    Common::SetCurrentThreadName("FIFO player thread");
-  else
-    Common::SetCurrentThreadName("FIFO-GPU thread");
-
-  // Enter CPU run loop. When we leave it - we are done.
-  if (auto cpu_core = FifoPlayer::GetInstance().GetCPUCore())
-  {
-    PowerPC::InjectExternalCPUCore(cpu_core.get());
-    s_is_started = true;
-
-    CPUSetInitialExecutionState();
-    CPU::Run();
-
-    s_is_started = false;
-    PowerPC::InjectExternalCPUCore(nullptr);
-    FifoPlayer::GetInstance().Close();
-  }
-  else
-  {
-    // FIFO log does not contain any frames, cannot continue.
-    PanicAlert("FIFO file is invalid, cannot playback.");
-    FifoPlayer::GetInstance().Close();
-    return;
-  }
-}
-
 // Initialize and create emulation thread
 // Call browser: Init():s_emu_thread().
 // See the BootManager.cpp file description for a complete call schedule.
@@ -506,10 +472,7 @@ void EmuThread(WindowSystemInfo wsi)
 
   // Determine the CPU thread function
   void (*cpuThreadFunc)(const std::optional<std::string>& savestate_path, bool delete_savestate);
-  if (std::holds_alternative<BootParameters::DFF>(boot_params->parameters))
-    cpuThreadFunc = FifoPlayerThread;
-  else
-    cpuThreadFunc = CpuThread;
+  cpuThreadFunc = CpuThread;
 
   if (!CBoot::BootUp(std::move(boot_params)))
     return;

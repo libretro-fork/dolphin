@@ -30,7 +30,6 @@
 #include "Core/Config/SYSCONFSettings.h"
 #include "Core/ConfigLoaders/GameConfigLoader.h"
 #include "Core/Core.h"
-#include "Core/FifoPlayer/FifoDataFile.h"
 #include "Core/HLE/HLE.h"
 #include "Core/HW/DVD/DVDInterface.h"
 #include "Core/HW/SI/SI.h"
@@ -85,7 +84,6 @@ void SConfig::SaveSettings()
   SaveMovieSettings(ini);
   SaveDSPSettings(ini);
   SaveInputSettings(ini);
-  SaveFifoPlayerSettings(ini);
   SaveNetworkSettings(ini);
   SaveBluetoothPassthroughSettings(ini);
   SaveUSBPassthroughSettings(ini);
@@ -283,13 +281,6 @@ void SConfig::SaveInputSettings(IniFile& ini)
   input->Set("BackgroundInput", m_BackgroundInput);
 }
 
-void SConfig::SaveFifoPlayerSettings(IniFile& ini)
-{
-  IniFile::Section* fifoplayer = ini.GetOrCreateSection("FifoPlayer");
-
-  fifoplayer->Set("LoopReplay", bLoopFifoReplay);
-}
-
 void SConfig::SaveNetworkSettings(IniFile& ini)
 {
   IniFile::Section* network = ini.GetOrCreateSection("Network");
@@ -349,7 +340,6 @@ void SConfig::LoadSettings()
   LoadMovieSettings(ini);
   LoadDSPSettings(ini);
   LoadInputSettings(ini);
-  LoadFifoPlayerSettings(ini);
   LoadNetworkSettings(ini);
   LoadBluetoothPassthroughSettings(ini);
   LoadUSBPassthroughSettings(ini);
@@ -559,13 +549,6 @@ void SConfig::LoadInputSettings(IniFile& ini)
   input->Get("BackgroundInput", &m_BackgroundInput, false);
 }
 
-void SConfig::LoadFifoPlayerSettings(IniFile& ini)
-{
-  IniFile::Section* fifoplayer = ini.GetOrCreateSection("FifoPlayer");
-
-  fifoplayer->Get("LoopReplay", &bLoopFifoReplay, true);
-}
-
 void SConfig::LoadNetworkSettings(IniFile& ini)
 {
   IniFile::Section* network = ini.GetOrCreateSection("Network");
@@ -740,8 +723,6 @@ void SConfig::LoadDefaults()
   bUsePanicHandlers = true;
   bOnScreenDisplayMessages = true;
 
-  bLoopFifoReplay = true;
-
   bJITOff = false;  // debugger only settings
   bJITLoadStoreOff = false;
   bJITLoadStoreFloatingOff = false;
@@ -877,13 +858,7 @@ struct SetGameMetadata
 
   bool operator()(const BootParameters::DFF& dff) const
   {
-    std::unique_ptr<FifoDataFile> dff_file(FifoDataFile::Load(dff.dff_path, true));
-    if (!dff_file)
-      return false;
-
-    config->bWii = dff_file->GetIsWii();
-    *region = DiscIO::Region::NTSC_U;
-    return true;
+    return false;
   }
 
 private:

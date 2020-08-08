@@ -16,9 +16,6 @@
     <Filter Include="DSPCore">
       <UniqueIdentifier>{35594696-15a6-44cb-b811-04e3195eecf5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FifoPlayer">
-      <UniqueIdentifier>{659f0a99-77cf-46a0-a7a3-95afdd99be72}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GeckoCode">
       <UniqueIdentifier>{c1c76a12-b4f3-4a46-84e6-e11980b2e997}</UniqueIdentifier>
     </Filter>
@@ -278,24 +275,6 @@
     </ClCompile>
     <ClCompile Include="DSP\Jit\x64\DSPJitUtil.cpp">
       <Filter>DSPCore\Jit\x64</Filter>
-    </ClCompile>
-    <ClCompile Include="FifoPlayer\FifoAnalyzer.cpp">
-      <Filter>FifoPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="FifoPlayer\FifoDataFile.cpp">
-      <Filter>FifoPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="FifoPlayer\FifoPlaybackAnalyzer.cpp">
-      <Filter>FifoPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="FifoPlayer\FifoPlayer.cpp">
-      <Filter>FifoPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="FifoPlayer\FifoRecordAnalyzer.cpp">
-      <Filter>FifoPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="FifoPlayer\FifoRecorder.cpp">
-      <Filter>FifoPlayer</Filter>
     </ClCompile>
     <ClCompile Include="GeckoCode.cpp">
       <Filter>GeckoCode</Filter>
@@ -985,24 +964,6 @@
     </ClInclude>
     <ClInclude Include="DSP\Jit\x64\DSPEmitter.h">
       <Filter>DSPCore\Jit\x64</Filter>
-    </ClInclude>
-    <ClInclude Include="FifoPlayer\FifoAnalyzer.h">
-      <Filter>FifoPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="FifoPlayer\FifoDataFile.h">
-      <Filter>FifoPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="FifoPlayer\FifoPlaybackAnalyzer.h">
-      <Filter>FifoPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="FifoPlayer\FifoPlayer.h">
-      <Filter>FifoPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="FifoPlayer\FifoRecordAnalyzer.h">
-      <Filter>FifoPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="FifoPlayer\FifoRecorder.h">
-      <Filter>FifoPlayer</Filter>
     </ClInclude>
     <ClInclude Include="GeckoCode.h">
       <Filter>GeckoCode</Filter>

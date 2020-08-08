@@ -24,8 +24,6 @@
 #include "Common/StringUtil.h"
 
 #include "Core/ConfigManager.h"
-#include "Core/FifoPlayer/FifoPlayer.h"
-#include "Core/FifoPlayer/FifoRecorder.h"
 #include "Core/HW/Memmap.h"
 
 #include "VideoCommon/AbstractStagingTexture.h"
@@ -741,12 +739,6 @@ TextureCacheBase::GetTexture(u32 address, u32 width, u32 height, const TextureFo
     return nullptr;
   }
 
-  // If we are recording a FifoLog, keep track of what memory we read. FifoRecorder does
-  // its own memory modification tracking independent of the texture hashing below.
-  if (g_bRecordFifoData && !from_tmem)
-    FifoRecorder::GetInstance().UseMemory(address, texture_size + additional_mips_size,
-                                          MemoryUpdate::TEXTURE_MAP);
-
   // TODO: This doesn't hash GB tiles for preloaded RGBA8 textures (instead, it's hashing more data
   // from the low tmem bank than it should)
   base_hash = Common::GetHash64(src_data, texture_size, textureCacheSafetyColorSampleSize);
@@ -831,8 +823,7 @@ TextureCacheBase::GetTexture(u32 address, u32 width, u32 height, const TextureFo
       // EFB copies have slightly different rules as EFB copy formats have different
       // meanings from texture formats.
       if ((base_hash == entry->hash &&
-           (!isPaletteTexture || g_Config.backend_info.bSupportsPaletteConversion)) ||
-          IsPlayingBackFifologWithBrokenEFBCopies)
+           (!isPaletteTexture || g_Config.backend_info.bSupportsPaletteConversion)))
       {
         // TODO: We should check format/width/height/levels for EFB copies. Checking
         // format is complicated because EFB copy formats don't exactly match
@@ -1882,18 +1873,6 @@ void TextureCacheBase::CopyRenderTargetToTexture(
       }
     }
     ++iter.first;
-  }
-
-  if (g_bRecordFifoData)
-  {
-    // Mark the memory behind this efb copy as dynamicly generated for the Fifo log
-    u32 address = dstAddr;
-    for (u32 i = 0; i < num_blocks_y; i++)
-    {
-      FifoRecorder::GetInstance().UseMemory(address, bytes_per_row, MemoryUpdate::TEXTURE_MAP,
-                                            true);
-      address += dstStride;
-    }
   }
 
   // Even if the copy is deferred, still compute the hash. This way if the copy is used as a texture

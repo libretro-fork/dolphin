@@ -18,7 +18,6 @@
 #include "Common/CommonTypes.h"
 #include "Common/Logging/Log.h"
 #include "Common/MsgHandler.h"
-#include "Core/FifoPlayer/FifoRecorder.h"
 #include "Core/HW/Memmap.h"
 #include "VideoCommon/BPMemory.h"
 #include "VideoCommon/CPMemory.h"
@@ -29,8 +28,6 @@
 #include "VideoCommon/VertexLoaderManager.h"
 #include "VideoCommon/VideoCommon.h"
 #include "VideoCommon/XFMemory.h"
-
-bool g_bRecordFifoData = false;
 
 namespace OpcodeDecoder
 {
@@ -243,14 +240,6 @@ u8* Run(DataReader src, u32* cycles, bool in_display_list)
         totalCycles += 1;
       }
       break;
-    }
-
-    // Display lists get added directly into the FIFO stream
-    if (!is_preprocess && g_bRecordFifoData && cmd_byte != GX_CMD_CALL_DL)
-    {
-      u8* opcodeEnd;
-      opcodeEnd = src.GetPointer();
-      FifoRecorder::GetInstance().WriteGPCommand(opcodeStart, u32(opcodeEnd - opcodeStart));
     }
   }
 

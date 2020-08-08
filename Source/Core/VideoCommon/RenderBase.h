@@ -187,9 +187,6 @@ protected:
 
   bool CheckForHostConfigChanges();
 
-  void CheckFifoRecording();
-  void RecordVideoMemory();
-
   // TODO: Remove the width/height parameters once we make the EFB an abstract framebuffer.
   const AbstractFramebuffer* m_current_framebuffer = nullptr;
   u32 m_current_framebuffer_width = 1;
