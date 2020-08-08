@@ -60,6 +60,7 @@
 #include "VideoCommon/Statistics.h"
 #include "VideoCommon/TextureCacheBase.h"
 #include "VideoCommon/TextureDecoder.h"
+#include "VideoCommon/VertexLoaderManager.h"
 #include "VideoCommon/VertexManagerBase.h"
 #include "VideoCommon/VertexShaderManager.h"
 #include "VideoCommon/VideoConfig.h"
@@ -236,114 +237,6 @@ bool Renderer::CheckForHostConfigChanges()
 // Create On-Screen-Messages
 void Renderer::DrawDebugText()
 {
-  std::string final_yellow, final_cyan;
-
-  if (SConfig::GetInstance().m_ShowInputDisplay)
-  {
-    final_cyan += Movie::GetInputDisplay();
-    final_yellow += "\n";
-  }
-
-  if (SConfig::GetInstance().m_ShowRTC)
-  {
-    final_cyan += Movie::GetRTCDisplay();
-    final_yellow += "\n";
-  }
-
-  // OSD Menu messages
-  if (m_osd_message > 0)
-  {
-    m_osd_time = Common::Timer::GetTimeMs() + 3000;
-    m_osd_message = -m_osd_message;
-  }
-
-  if (static_cast<u32>(m_osd_time) > Common::Timer::GetTimeMs())
-  {
-    std::string res_text;
-    switch (g_ActiveConfig.iEFBScale)
-    {
-    case EFB_SCALE_AUTO_INTEGRAL:
-      res_text = "Auto (integral)";
-      break;
-    case 1:
-      res_text = "Native";
-      break;
-    default:
-      res_text = StringFromFormat("%dx", g_ActiveConfig.iEFBScale);
-      break;
-    }
-    const char* ar_text = "";
-    switch (g_ActiveConfig.aspect_mode)
-    {
-    case AspectMode::Stretch:
-      ar_text = "Stretch";
-      break;
-    case AspectMode::Analog:
-      ar_text = "Force 4:3";
-      break;
-    case AspectMode::AnalogWide:
-      ar_text = "Force 16:9";
-      break;
-    case AspectMode::Auto:
-    default:
-      ar_text = "Auto";
-      break;
-    }
-    const std::string audio_text = SConfig::GetInstance().m_IsMuted ?
-                                       "Muted" :
-                                       std::to_string(SConfig::GetInstance().m_Volume) + "%";
-
-    const char* const efbcopy_text = g_ActiveConfig.bSkipEFBCopyToRam ? "to Texture" : "to RAM";
-    const char* const xfbcopy_text = g_ActiveConfig.bSkipXFBCopyToRam ? "to Texture" : "to RAM";
-
-    // The rows
-    const std::string lines[] = {
-        std::string("Internal Resolution: ") + res_text,
-        std::string("Aspect Ratio: ") + ar_text + (g_ActiveConfig.bCrop ? " (crop)" : ""),
-        std::string("Copy EFB: ") + efbcopy_text,
-        std::string("Fog: ") + (g_ActiveConfig.bDisableFog ? "Disabled" : "Enabled"),
-        SConfig::GetInstance().m_EmulationSpeed <= 0 ?
-            "Speed Limit: Unlimited" :
-            StringFromFormat("Speed Limit: %li%%",
-                             std::lround(SConfig::GetInstance().m_EmulationSpeed * 100.f)),
-        std::string("Copy XFB: ") + xfbcopy_text +
-            (g_ActiveConfig.bImmediateXFB ? " (Immediate)" : ""),
-        "Volume: " + audio_text,
-    };
-
-    enum
-    {
-      lines_count = sizeof(lines) / sizeof(*lines)
-    };
-
-    // The latest changed setting in yellow
-    for (int i = 0; i != lines_count; ++i)
-    {
-      if (m_osd_message == -i - 1)
-        final_yellow += lines[i];
-      final_yellow += '\n';
-    }
-
-    // The other settings in cyan
-    for (int i = 0; i != lines_count; ++i)
-    {
-      if (m_osd_message != -i - 1)
-        final_cyan += lines[i];
-      final_cyan += '\n';
-    }
-  }
-
-  final_cyan += Common::Profiler::ToString();
-
-  if (g_ActiveConfig.bOverlayStats)
-    final_cyan += Statistics::ToString();
-
-  if (g_ActiveConfig.bOverlayProjStats)
-    final_cyan += Statistics::ToStringProj();
-
-  // and then the text
-  RenderText(final_cyan, 20, 20, 0xFF00FFFF);
-  RenderText(final_yellow, 20, 20, 0xFFFFFF00);
 }
 
 float Renderer::CalculateDrawAspectRatio() const
@@ -713,9 +606,4 @@ bool Renderer::UseVertexDepthRange() const
 std::unique_ptr<VideoCommon::AsyncShaderCompiler> Renderer::CreateAsyncShaderCompiler()
 {
   return std::make_unique<VideoCommon::AsyncShaderCompiler>();
-}
-
-void Renderer::ShowOSDMessage(OSDMessage message)
-{
-  m_osd_message = static_cast<s32>(message);
 }

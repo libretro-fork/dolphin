@@ -1417,9 +1417,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
 
   ResetAPIState();
 
-  // Do our OSD callbacks
-  OSD::DoCallbacks(OSD::CallbackType::OnFrame);
-
   // Check if we need to render to a new surface.
   CheckForSurfaceChange();
   CheckForSurfaceResize();
@@ -1444,10 +1441,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
 
     // Render OSD messages.
     glViewport(0, 0, m_backbuffer_width, m_backbuffer_height);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    DrawDebugText();
-    OSD::DrawMessages();
 
     // Swap the back and front buffers, presenting the image.
     m_main_gl_context->Swap();

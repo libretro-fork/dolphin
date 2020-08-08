@@ -285,9 +285,6 @@ void VideoBackendBase::InitializeShared()
   memset(&g_preprocess_cp_state, 0, sizeof(g_preprocess_cp_state));
   memset(texMem, 0, TMEM_SIZE);
 
-  // Do our OSD callbacks
-  OSD::DoCallbacks(OSD::CallbackType::Initialization);
-
   // do not initialize again for the config window
   m_initialized = true;
 
@@ -316,9 +313,6 @@ void VideoBackendBase::ShutdownShared()
     m_invalid = true;
     return;
   }
-
-  // Do our OSD callbacks
-  OSD::DoCallbacks(OSD::CallbackType::Shutdown);
 
   m_initialized = false;
 
