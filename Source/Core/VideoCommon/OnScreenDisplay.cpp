@@ -37,10 +37,6 @@ void AddMessage(const std::string& message, u32 ms, u32 rgba)
 
 void DrawMessage(const Message& msg, int top, int left, int time_left)
 {
-  float alpha = std::min(1.0f, std::max(0.0f, time_left / 1024.0f));
-  u32 color = (msg.m_rgba & 0xFFFFFF) | ((u32)((msg.m_rgba >> 24) * alpha) << 24);
-
-  g_renderer->RenderText(msg.m_str, left, top, color);
 }
 
 void DrawMessages()
