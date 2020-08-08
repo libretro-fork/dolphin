@@ -35,7 +35,6 @@
 #include "Core/NetPlayClient.h"
 #include "Core/PowerPC/PowerPC.h"
 
-#include "VideoCommon/OnScreenDisplay.h"
 #include "VideoCommon/VideoBackendBase.h"
 
 namespace State
@@ -154,7 +153,6 @@ void DoState(PointerWrap& p)
         version_created_by.empty() ?
             "This savestate was created using an incompatible version of Dolphin" :
             "This savestate was created using the incompatible version " + version_created_by;
-    Core::DisplayMessage(message, OSD::Duration::NORMAL);
     p.SetMode(PointerWrap::MODE_MEASURE);
     return;
   }
@@ -164,9 +162,6 @@ void DoState(PointerWrap& p)
   p.Do(is_wii);
   if (is_wii != is_wii_currently)
   {
-    OSD::AddMessage(StringFromFormat("Cannot load a savestate created under %s mode in %s mode",
-                                     is_wii ? "Wii" : "GC", is_wii_currently ? "Wii" : "GC"),
-                    OSD::Duration::NORMAL, OSD::Color::RED);
     p.SetMode(PointerWrap::MODE_MEASURE);
     return;
   }
@@ -196,11 +191,9 @@ void DoState(PointerWrap& p)
 
 void LoadFromBuffer(std::vector<u8>& buffer)
 {
+  /* Loading savestates is disabled in Netplay to prevent desyncs */
   if (NetPlay::IsNetPlayRunning())
-  {
-    OSD::AddMessage("Loading savestates is disabled in Netplay to prevent desyncs");
     return;
-  }
 
   Core::RunAsCPUThread([&] {
     u8* ptr = &buffer[0];
@@ -519,11 +512,9 @@ void LoadAs(const std::string& filename)
   {
     return;
   }
+  /* Loading savestates is disabled in Netplay to prevent desyncs */
   else if (NetPlay::IsNetPlayRunning())
-  {
-    OSD::AddMessage("Loading savestates is disabled in Netplay to prevent desyncs");
     return;
-  }
 
   Core::RunAsCPUThread([&] {
     g_loadDepth++;
@@ -570,8 +561,7 @@ void LoadAs(const std::string& filename)
       }
       else
       {
-        Core::DisplayMessage("The savestate could not be loaded", OSD::Duration::NORMAL);
-
+        /* The savestate could not be loaded */
         // since we could be in an inconsistent state now (and might crash or whatever), undo.
         if (g_loadDepth < 2)
           UndoLoadState();

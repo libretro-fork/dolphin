@@ -70,7 +70,6 @@
 #include "InputCommon/GCAdapter.h"
 
 #include "VideoCommon/Fifo.h"
-#include "VideoCommon/OnScreenDisplay.h"
 #include "VideoCommon/RenderBase.h"
 #include "VideoCommon/VideoBackendBase.h"
 #include "VideoCommon/VideoConfig.h"
@@ -121,18 +120,6 @@ std::string StopMessage(bool main_thread, const std::string& message)
 
 void DisplayMessage(const std::string& message, int time_in_ms)
 {
-  if (!IsRunning())
-    return;
-
-  // Actually displaying non-ASCII could cause things to go pear-shaped
-  for (const char& c : message)
-  {
-    if (!std::isprint(c, std::locale::classic()))
-      return;
-  }
-
-  OSD::AddMessage(message, time_in_ms);
-  Host_UpdateTitle(message);
 }
 
 bool IsRunning()
@@ -418,9 +405,6 @@ void EmuThread(WindowSystemInfo wsi)
     INFO_LOG(CONSOLE, "%s", StopMessage(false, "Shutting down HW").c_str());
     HW::Shutdown();
     INFO_LOG(CONSOLE, "%s", StopMessage(false, "HW shutdown").c_str());
-
-    // Clear on screen messages that haven't expired
-    OSD::ClearMessages();
 
     // The config must be restored only after the whole HW has shut down,
     // not when it is still running.

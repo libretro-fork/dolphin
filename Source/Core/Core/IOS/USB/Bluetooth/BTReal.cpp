@@ -29,7 +29,6 @@
 #include "Core/Core.h"
 #include "Core/HW/Memmap.h"
 #include "Core/IOS/Device.h"
-#include "VideoCommon/OnScreenDisplay.h"
 
 namespace IOS::HLE::Device
 {
@@ -306,17 +305,21 @@ void BluetoothReal::DoState(PointerWrap& p)
     // Prevent the callbacks from replying to a request that has already been discarded.
     m_current_transfers.clear();
 
+#if 0
     OSD::AddMessage("If the savestate does not load correctly, disconnect all Wii Remotes "
                     "and reload it.",
                     OSD::Duration::NORMAL);
+#endif
   }
 
   if (!s_has_shown_savestate_warning && p.GetMode() == PointerWrap::MODE_WRITE)
   {
+#if 0
     OSD::AddMessage("Savestates may not work with Bluetooth passthrough in all cases.\n"
                     "They will only work if no remote is connected when restoring the state,\n"
                     "or no remote is disconnected after saving.",
                     OSD::Duration::VERY_LONG);
+#endif
     s_has_shown_savestate_warning = true;
   }
 

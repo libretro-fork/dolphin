@@ -54,7 +54,6 @@
 #include "Core/WiiRoot.h"
 #include "InputCommon/GCAdapter.h"
 #include "UICommon/GameFile.h"
-#include "VideoCommon/OnScreenDisplay.h"
 #include "VideoCommon/VideoConfig.h"
 
 namespace NetPlay
@@ -1120,10 +1119,11 @@ void NetPlayClient::DisplayPlayersPing()
 {
   if (!g_ActiveConfig.bShowNetPlayPing)
     return;
-
+#if 0
   OSD::AddTypedMessage(OSD::MessageType::NetPlayPing,
                        StringFromFormat("Ping: %u", GetPlayersMaxPing()), OSD::Duration::SHORT,
                        OSD::Color::CYAN);
+#endif
 }
 
 u32 NetPlayClient::GetPlayersMaxPing() const

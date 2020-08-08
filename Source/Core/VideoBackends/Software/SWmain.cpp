@@ -23,7 +23,6 @@
 #include "VideoBackends/Software/VideoBackend.h"
 
 #include "VideoCommon/FramebufferManagerBase.h"
-#include "VideoCommon/OnScreenDisplay.h"
 #include "VideoCommon/TextureCacheBase.h"
 #include "VideoCommon/VideoCommon.h"
 #include "VideoCommon/VideoConfig.h"

@@ -12,7 +12,6 @@
 #include "VideoBackends/OGL/Render.h"
 
 #include "VideoCommon/DriverDetails.h"
-#include "VideoCommon/OnScreenDisplay.h"
 
 namespace OGL
 {

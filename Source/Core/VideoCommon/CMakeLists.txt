@@ -21,7 +21,6 @@ add_library(videocommon
   ImageWrite.cpp
   IndexGenerator.cpp
   LightingShaderGen.cpp
-  OnScreenDisplay.cpp
   OpcodeDecoding.cpp
   PerfQueryBase.cpp
   PixelEngine.cpp

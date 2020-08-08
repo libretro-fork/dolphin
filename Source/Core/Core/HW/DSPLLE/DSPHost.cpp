@@ -17,7 +17,6 @@
 #include "Core/HW/DSP.h"
 #include "Core/HW/DSPLLE/DSPSymbols.h"
 #include "Core/Host.h"
-#include "VideoCommon/OnScreenDisplay.h"
 
 // The user of the DSPCore library must supply a few functions so that the
 // emulation core can access the environment it runs in. If the emulation
@@ -40,7 +39,6 @@ void WriteHostMemory(u8 value, u32 addr)
 
 void OSD_AddMessage(const std::string& str, u32 ms)
 {
-  OSD::AddMessage(str, ms);
 }
 
 bool OnThread()

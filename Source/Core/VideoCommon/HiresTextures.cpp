@@ -30,7 +30,6 @@
 #include "Common/Timer.h"
 #include "Core/Config/GraphicsSettings.h"
 #include "Core/ConfigManager.h"
-#include "VideoCommon/OnScreenDisplay.h"
 #include "VideoCommon/VideoConfig.h"
 
 struct DiskTexture
@@ -179,18 +178,22 @@ void HiresTexture::Prefetch()
     {
       Config::SetCurrent(Config::GFX_HIRES_TEXTURES, false);
 
+#if 0
       OSD::AddMessage(
           StringFromFormat(
               "Custom Textures prefetching after %.1f MB aborted, not enough RAM available",
               size_sum / (1024.0 * 1024.0)),
           10000);
+#endif
       return;
     }
   }
+#if 0
   u32 stoptime = Common::Timer::GetTimeMs();
   OSD::AddMessage(StringFromFormat("Custom Textures loaded, %.1f MB in %.1f s",
                                    size_sum / (1024.0 * 1024.0), (stoptime - starttime) / 1000.0),
                   10000);
+#endif
 }
 
 std::string HiresTexture::GenBaseName(const u8* texture, size_t texture_size, const u8* tlut,

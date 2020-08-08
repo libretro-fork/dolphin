@@ -101,9 +101,6 @@
     <ClCompile Include="IndexGenerator.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="OnScreenDisplay.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
     <ClCompile Include="PostProcessing.cpp">
       <Filter>Util</Filter>
     </ClCompile>
@@ -279,9 +276,6 @@
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="LookUpTables.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="OnScreenDisplay.h">
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="PostProcessing.h">

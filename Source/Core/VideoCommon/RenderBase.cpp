@@ -52,7 +52,6 @@
 #include "VideoCommon/Debugger.h"
 #include "VideoCommon/FramebufferManagerBase.h"
 #include "VideoCommon/ImageWrite.h"
-#include "VideoCommon/OnScreenDisplay.h"
 #include "VideoCommon/PixelShaderManager.h"
 #include "VideoCommon/PostProcessing.h"
 #include "VideoCommon/ShaderCache.h"
@@ -227,7 +226,6 @@ bool Renderer::CheckForHostConfigChanges()
   m_last_efb_multisamples = g_ActiveConfig.iMultisamples;
 
   // Reload shaders.
-  OSD::AddMessage("Video config changed, reloading shaders.", OSD::Duration::NORMAL);
   SetPipeline(nullptr);
   g_vertex_manager->InvalidatePipelineObject();
   g_shader_cache->SetHostConfig(new_host_config, g_ActiveConfig.iMultisamples);

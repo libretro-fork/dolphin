@@ -41,7 +41,6 @@
 #include "VideoCommon/BPFunctions.h"
 #include "VideoCommon/DriverDetails.h"
 #include "VideoCommon/IndexGenerator.h"
-#include "VideoCommon/OnScreenDisplay.h"
 #include "VideoCommon/PixelEngine.h"
 #include "VideoCommon/RenderState.h"
 #include "VideoCommon/ShaderGenCommon.h"
@@ -569,7 +568,9 @@ Renderer::Renderer(std::unique_ptr<GLContext> main_gl_context)
           !g_ogl_config.bSupports3DTextureStorageMultisample)
       {
         // GLES 3.1 can't support stereo rendering and MSAA
+#if 0
         OSD::AddMessage("MSAA Stereo rendering isn't supported by your GPU.", 10000);
+#endif
         Config::SetCurrent(Config::GFX_MSAA, UINT32_C(1));
       }
     }
@@ -726,10 +727,7 @@ Renderer::Renderer(std::unique_ptr<GLContext> main_gl_context)
   // Since we modify the config here, we need to update the last host bits, it may have changed.
   m_last_host_config_bits = ShaderHostConfig::GetCurrent().bits;
 
-  OSD::AddMessage(StringFromFormat("Video Info: %s, %s, %s", g_ogl_config.gl_vendor,
-                                   g_ogl_config.gl_renderer, g_ogl_config.gl_version),
-                  5000);
-
+#if 0
   if (!g_ogl_config.bSupportsGLBufferStorage && !g_ogl_config.bSupportsGLPinnedMemory)
   {
     OSD::AddMessage(StringFromFormat("Your OpenGL driver does not support %s_buffer_storage.",
@@ -738,6 +736,7 @@ Renderer::Renderer(std::unique_ptr<GLContext> main_gl_context)
     OSD::AddMessage("This device's performance will be terrible.", 60000);
     OSD::AddMessage("Please ask your device vendor for an updated OpenGL driver.", 60000);
   }
+#endif
 
   WARN_LOG(VIDEO, "Missing OGL Extensions: %s%s%s%s%s%s%s%s%s%s%s%s%s%s",
            g_ActiveConfig.backend_info.bSupportsDualSourceBlend ? "" : "DualSourceBlend ",
@@ -1452,10 +1451,12 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
     if (s_MSAASamples > 1 && s_MSAASamples > g_ogl_config.max_samples)
     {
       s_MSAASamples = g_ogl_config.max_samples;
+#if 0
       OSD::AddMessage(
           StringFromFormat("%d Anti Aliasing samples selected, but only %d supported by your GPU.",
                            s_last_multisamples, g_ogl_config.max_samples),
           10000);
+#endif
     }
 
     g_framebuffer_manager.reset();

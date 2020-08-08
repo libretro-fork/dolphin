@@ -34,7 +34,6 @@
 #include "VideoBackends/D3D/VertexShaderCache.h"
 
 #include "VideoCommon/BPFunctions.h"
-#include "VideoCommon/OnScreenDisplay.h"
 #include "VideoCommon/PixelEngine.h"
 #include "VideoCommon/RenderState.h"
 #include "VideoCommon/VideoBackendBase.h"
@@ -590,8 +589,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
   D3D::context->RSSetViewports(1, &vp);
 
   Renderer::DrawDebugText();
-
-  OSD::DrawMessages();
 
   g_texture_cache->Cleanup(frameCount);
 

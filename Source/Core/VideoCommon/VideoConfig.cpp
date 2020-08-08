@@ -11,7 +11,6 @@
 #include "Core/ConfigManager.h"
 #include "Core/Core.h"
 #include "Core/Movie.h"
-#include "VideoCommon/OnScreenDisplay.h"
 #include "VideoCommon/VideoCommon.h"
 #include "VideoCommon/VideoConfig.h"
 
@@ -170,9 +169,11 @@ void VideoConfig::VerifyValidity()
   {
     if (!backend_info.bSupportsGeometryShaders)
     {
+#if 0
       OSD::AddMessage(
           "Stereoscopic 3D isn't supported by your GPU, support for OpenGL 3.2 is required.",
           10000);
+#endif
       stereo_mode = StereoMode::Off;
     }
   }
