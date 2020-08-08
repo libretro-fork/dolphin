@@ -64,8 +64,6 @@ static int s_MSAASamples = 1;
 static u32 s_last_multisamples = 1;
 static bool s_last_stereo_mode = false;
 
-static bool s_vsync;
-
 // EFB cache related
 static const u32 EFB_CACHE_RECT_SIZE = 64;  // Cache 64x64 blocks.
 static const u32 EFB_CACHE_WIDTH =
@@ -759,11 +757,6 @@ Renderer::Renderer(std::unique_ptr<GLContext> main_gl_context)
   s_MSAASamples = s_last_multisamples;
 
   s_last_stereo_mode = g_ActiveConfig.stereo_mode != StereoMode::Off;
-
-  // Handle VSync on/off
-  s_vsync = g_ActiveConfig.IsVSync();
-  if (!DriverDetails::HasBug(DriverDetails::BUG_BROKEN_VSYNC))
-    m_main_gl_context->SwapInterval(s_vsync);
 
   // Because of the fixed framebuffer size we need to disable the resolution
   // options while running
@@ -1493,13 +1486,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
         m_target_width, m_target_height, s_MSAASamples, BoundingBox::NeedsStencilBuffer());
     BoundingBox::SetTargetSizeChanged(m_target_width, m_target_height);
     UpdateDrawRectangle();
-  }
-
-  if (s_vsync != g_ActiveConfig.IsVSync())
-  {
-    s_vsync = g_ActiveConfig.IsVSync();
-    if (!DriverDetails::HasBug(DriverDetails::BUG_BROKEN_VSYNC))
-      m_main_gl_context->SwapInterval(s_vsync);
   }
 
   // Clean out old stuff from caches. It's not worth it to clean out the shader caches.
