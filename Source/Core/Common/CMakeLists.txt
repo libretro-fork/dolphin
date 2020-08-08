@@ -68,11 +68,7 @@ if (APPLE)
   )
 endif()
 
-if(ANDROID)
-  target_sources(common PRIVATE
-    Logging/ConsoleListenerDroid.cpp
-  )
-elseif(WIN32)
+if(WIN32)
   target_sources(common PRIVATE
     Logging/ConsoleListenerWin.cpp
   )

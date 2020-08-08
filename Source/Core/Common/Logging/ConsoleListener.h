@@ -13,7 +13,4 @@ public:
   ~ConsoleListener();
 
   void Log(LogTypes::LOG_LEVELS, const char* text) override;
-
-private:
-  bool m_use_color;
 };
