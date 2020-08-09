@@ -1,5 +1,6 @@
 // needs to be first
-#include "DolphinLibretro/Video.h"
+#include "Video.h"
+#include "VideoVulkan.h"
 
 #include <cassert>
 #include <libretro.h>

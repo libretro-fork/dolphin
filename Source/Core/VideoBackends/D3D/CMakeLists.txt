@@ -42,6 +42,11 @@ add_library(videod3d
   VideoBackend.h
 )
 
+target_include_directories(videod3d
+PRIVATE
+${CMAKE_SOURCE_DIR}/Externals/Libretro/Include
+)
+
 target_link_libraries(videod3d
 PUBLIC
   common

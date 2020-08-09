@@ -13,6 +13,10 @@
 #include <strsafe.h>
 #include <tuple>
 
+#include <libretro.h>
+
+#include "DolphinLibretro/Video.h"
+
 #include "Common/Assert.h"
 #include "Common/CommonTypes.h"
 #include "Common/Logging/Log.h"
@@ -558,6 +562,7 @@ void Renderer::ReinterpretPixelData(unsigned int convtype)
   RestoreAPIState();
 }
 
+#if 0
 // This function has the final picture. We adjust the aspect ratio here.
 void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region, u64 ticks)
 {
@@ -620,6 +625,43 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
   // begin next frame
   RestoreAPIState();
 }
+#else
+void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& rc, u64 ticks)
+{
+   DX11::D3DTexture2D* xfb_texture = static_cast<DX11::DXTexture*>(texture)->GetRawTexIdentifier();
+
+   ID3D11RenderTargetView* nullView = nullptr;
+   DX11::D3D::context->OMSetRenderTargets(1, &nullView, nullptr);
+   DX11::D3D::context->PSSetShaderResources(0, 1, &xfb_texture->GetSRV());
+   Libretro::Video::video_cb(RETRO_HW_FRAME_BUFFER_VALID, rc.GetWidth(), rc.GetHeight(), 0);
+
+   ResetAPIState();
+   g_texture_cache->Cleanup(frameCount);
+
+   // Enable configuration changes
+   UpdateActiveConfig();
+   g_texture_cache->OnConfigChanged(g_ActiveConfig);
+
+   // Resize the back buffers NOW to avoid flickering
+   if (CalculateTargetSize())
+   {
+      UpdateDrawRectangle();
+      g_framebuffer_manager.reset();
+      g_framebuffer_manager =
+         std::make_unique<DX11::FramebufferManager>(m_target_width, m_target_height);
+      static constexpr std::array<float, 4> clear_color{{0.f, 0.f, 0.f, 1.f}};
+      DX11::D3D::context->ClearRenderTargetView(
+            DX11::FramebufferManager::GetEFBColorTexture()->GetRTV(), clear_color.data());
+      DX11::D3D::context->ClearDepthStencilView(
+            DX11::FramebufferManager::GetEFBDepthTexture()->GetDSV(), D3D11_CLEAR_DEPTH, 0.f, 0);
+   }
+
+   CheckForHostConfigChanges();
+   // begin next frame
+   RestoreAPIState();
+   DX11::D3D::stateman->Restore();
+}
+#endif
 
 void Renderer::CheckForSurfaceChange()
 {

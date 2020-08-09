@@ -177,7 +177,7 @@ void retro_run(void)
     {
       g_renderer->Shutdown();
       g_renderer.reset();
-      g_renderer = std::make_unique<Libretro::Video::DX11Renderer>();
+      g_renderer = std::make_unique<DX11::Renderer>(1, 1);
     }
 #endif
     while (!Core::IsRunningAndStarted())
