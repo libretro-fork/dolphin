@@ -22,14 +22,13 @@
 #include "VideoBackends/D3D/TextureCache.h"
 #endif
 
-extern retro_video_refresh_t video_cb;
-extern struct retro_hw_render_callback hw_render;
-
 namespace Libretro
 {
 namespace Video
 {
 void Init(void);
+extern retro_video_refresh_t video_cb;
+extern struct retro_hw_render_callback hw_render;
 extern WindowSystemInfo wsi;
 
 #ifndef __APPLE__
@@ -67,7 +66,7 @@ public:
     ID3D11RenderTargetView* nullView = nullptr;
     DX11::D3D::context->OMSetRenderTargets(1, &nullView, nullptr);
     DX11::D3D::context->PSSetShaderResources(0, 1, &xfb_texture->GetSRV());
-    video_cb(RETRO_HW_FRAME_BUFFER_VALID, rc.GetWidth(), rc.GetHeight(), 0);
+    Libretro::Video::video_cb(RETRO_HW_FRAME_BUFFER_VALID, rc.GetWidth(), rc.GetHeight(), 0);
 
     ResetAPIState();
     g_texture_cache->Cleanup(frameCount);

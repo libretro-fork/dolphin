@@ -188,7 +188,7 @@ void retro_run(void)
 		  || SConfig::GetInstance().m_strVideoBackend == "Software Renderer")
   {
     OGL::g_ogl_config.defaultFramebuffer =
-        (GLuint)hw_render.get_current_framebuffer();
+        (GLuint)Libretro::Video::hw_render.get_current_framebuffer();
   }
 
   if (Libretro::Options::efbScale.Updated())
@@ -196,7 +196,7 @@ void retro_run(void)
     g_Config.iEFBScale = Libretro::Options::efbScale;
 
     unsigned cmd = RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO;
-    if (hw_render.context_type == RETRO_HW_CONTEXT_DIRECT3D)
+    if (Libretro::Video::hw_render.context_type == RETRO_HW_CONTEXT_DIRECT3D)
       cmd = RETRO_ENVIRONMENT_SET_GEOMETRY;
 
     retro_system_av_info info;
