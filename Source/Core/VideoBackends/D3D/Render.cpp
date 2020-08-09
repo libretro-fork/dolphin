@@ -588,8 +588,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
                                       static_cast<float>(m_backbuffer_height));
   D3D::context->RSSetViewports(1, &vp);
 
-  Renderer::DrawDebugText();
-
   g_texture_cache->Cleanup(frameCount);
 
   // Enable configuration changes

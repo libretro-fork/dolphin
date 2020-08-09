@@ -151,8 +151,6 @@ public:
   float EFBToScaledYf(float y) const;
 
   // Random utilities
-  void DrawDebugText();
-
   virtual void ClearScreen(const EFBRectangle& rc, bool colorEnable, bool alphaEnable, bool zEnable,
                            u32 color, u32 z) = 0;
   virtual void ReinterpretPixelData(unsigned int convtype) = 0;

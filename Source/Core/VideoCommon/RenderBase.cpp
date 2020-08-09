@@ -229,11 +229,6 @@ bool Renderer::CheckForHostConfigChanges()
   return true;
 }
 
-// Create On-Screen-Messages
-void Renderer::DrawDebugText()
-{
-}
-
 float Renderer::CalculateDrawAspectRatio() const
 {
   if (g_ActiveConfig.aspect_mode == AspectMode::Stretch)
