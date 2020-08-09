@@ -4,6 +4,8 @@
 #include "Video.h"
 #include "Options.h"
 
+extern retro_video_refresh_t video_cb;
+
 namespace Libretro
 {
 namespace Video

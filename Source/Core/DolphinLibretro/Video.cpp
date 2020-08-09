@@ -35,13 +35,14 @@
 #include "VideoBackends/Vulkan/VulkanContext.h"
 #endif
 
+retro_video_refresh_t video_cb;
+struct retro_hw_render_callback hw_render;
+
 namespace Libretro
 {
 extern retro_environment_t environ_cb;
 namespace Video
 {
-retro_video_refresh_t video_cb;
-struct retro_hw_render_callback hw_render;
 
 WindowSystemInfo wsi(WindowSystemType::Libretro, nullptr, nullptr);
 
@@ -307,5 +308,5 @@ void Init()
 
 void retro_set_video_refresh(retro_video_refresh_t cb)
 {
-  Libretro::Video::video_cb = cb;
+  video_cb = cb;
 }
