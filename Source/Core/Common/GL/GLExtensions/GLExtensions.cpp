@@ -9,9 +9,7 @@
 #include "Common/GL/GLExtensions/GLExtensions.h"
 #include "Common/Logging/Log.h"
 
-#if defined(__linux__) || defined(__APPLE__)
-#include <dlfcn.h>
-#endif
+#include "DolphinLibretro/Video.h"
 
 // gl_1_1
 PFNDOLCLEARINDEXPROC dolClearIndex;
@@ -2431,7 +2429,7 @@ static void InitVersion()
 
 static void* GetFuncAddress(GLContext* context, const std::string& name, void** func)
 {
-  *func = context->GetFuncAddress(name);
+  *func = (void*)(Libretro::Video::hw_render.get_proc_address(name.c_str()));
   if (*func == nullptr)
   {
 #if defined(__linux__) || defined(__APPLE__)

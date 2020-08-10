@@ -59,6 +59,11 @@ PRIVATE
   ${VTUNE_LIBRARIES}
 )
 
+target_include_directories(common
+PRIVATE
+${CMAKE_SOURCE_DIR}/Externals/Libretro/Include
+)
+
 if (APPLE)
   target_link_libraries(common
   PRIVATE

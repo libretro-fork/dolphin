@@ -30,10 +30,5 @@ bool RetroGLContext::Initialize(void* display_handle,
   return true;
 }
 
-void* RetroGLContext::GetFuncAddress(const std::string& name)
-{
-  return (void*)(hw_render.get_proc_address(name.c_str()));
-}
-
 }
 }
