@@ -93,8 +93,6 @@ private:
 
   void BeginFrame();
 
-  void CheckForSurfaceChange();
-  void CheckForSurfaceResize();
   void CheckForConfigChanges();
 
   void ResetSamplerStates();

@@ -566,8 +566,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
   ResetAPIState();
 
   // Prepare to copy the XFBs to our backbuffer
-  CheckForSurfaceChange();
-  CheckForSurfaceResize();
   UpdateDrawRectangle();
 
   TargetRectangle targetRc = GetTargetRectangle();
@@ -659,49 +657,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& rc, u64 ti
    DX11::D3D::stateman->Restore();
 }
 #endif
-
-void Renderer::CheckForSurfaceChange()
-{
-  if (!m_surface_changed.TestAndClear())
-    return;
-
-  SAFE_RELEASE(m_3d_vision_texture);
-
-  D3D::Reset(reinterpret_cast<HWND>(m_new_surface_handle));
-  m_new_surface_handle = nullptr;
-
-  UpdateBackbufferSize();
-}
-
-void Renderer::CheckForSurfaceResize()
-{
-  const bool fullscreen_state = D3D::GetFullscreenState();
-  const bool exclusive_fullscreen_changed = fullscreen_state != m_last_fullscreen_state;
-  if (!m_surface_resized.TestAndClear() && !exclusive_fullscreen_changed)
-    return;
-
-  SAFE_RELEASE(m_3d_vision_texture);
-  m_last_fullscreen_state = fullscreen_state;
-  if (D3D::swapchain)
-    D3D::ResizeSwapChain();
-  UpdateBackbufferSize();
-}
-
-void Renderer::UpdateBackbufferSize()
-{
-  if (D3D::swapchain)
-  {
-    DXGI_SWAP_CHAIN_DESC1 desc = {};
-    D3D::swapchain->GetDesc1(&desc);
-    m_backbuffer_width = std::max(desc.Width, 1u);
-    m_backbuffer_height = std::max(desc.Height, 1u);
-  }
-  else
-  {
-    m_backbuffer_width = 1;
-    m_backbuffer_height = 1;
-  }
-}
 
 // ALWAYS call RestoreAPIState for each ResetAPIState call you're doing
 void Renderer::ResetAPIState()

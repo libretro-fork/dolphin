@@ -77,9 +77,6 @@ private:
   void SetupDeviceObjects();
   void TeardownDeviceObjects();
   void Create3DVisionTexture(int width, int height);
-  void CheckForSurfaceChange();
-  void CheckForSurfaceResize();
-  void UpdateBackbufferSize();
 
   void BlitScreen(TargetRectangle src, TargetRectangle dst, D3DTexture2D* src_texture,
                   u32 src_width, u32 src_height);

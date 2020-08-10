@@ -1400,8 +1400,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
   ResetAPIState();
 
   // Check if we need to render to a new surface.
-  CheckForSurfaceChange();
-  CheckForSurfaceResize();
   UpdateDrawRectangle();
   TargetRectangle flipped_trc = GetTargetRectangle();
   std::swap(flipped_trc.top, flipped_trc.bottom);
@@ -1493,27 +1491,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
 
   // Invalidate EFB cache
   ClearEFBCache();
-}
-
-void Renderer::CheckForSurfaceChange()
-{
-  if (!m_surface_changed.TestAndClear())
-    return;
-
-  m_new_surface_handle = nullptr;
-
-  // With a surface change, the window likely has new dimensions.
-  m_backbuffer_width = m_main_gl_context->GetBackBufferWidth();
-  m_backbuffer_height = m_main_gl_context->GetBackBufferHeight();
-}
-
-void Renderer::CheckForSurfaceResize()
-{
-  if (!m_surface_resized.TestAndClear())
-    return;
-
-  m_backbuffer_width = m_main_gl_context->GetBackBufferWidth();
-  m_backbuffer_height = m_main_gl_context->GetBackBufferHeight();
 }
 
 void Renderer::DrawEFB(GLuint framebuffer, const TargetRectangle& target_rc,

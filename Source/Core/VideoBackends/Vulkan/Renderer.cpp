@@ -542,10 +542,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
   StateTracker::GetInstance()->EndRenderPass();
   StateTracker::GetInstance()->OnEndFrame();
 
-  // Handle host window resizes.
-  CheckForSurfaceChange();
-  CheckForSurfaceResize();
-
   // There are a few variables which can alter the final window draw rectangle, and some of them
   // are determined by guest state. Currently, the only way to catch these is to update every frame.
   UpdateDrawRectangle();
@@ -685,52 +681,6 @@ void Renderer::BlitScreen(VkRenderPass render_pass, const TargetRectangle& dst_r
   {
     post_processor->BlitFromTexture(dst_rect, src_rect, src_tex, 0, render_pass);
   }
-}
-
-void Renderer::CheckForSurfaceChange()
-{
-  if (!m_surface_changed.TestAndClear() || !m_swap_chain)
-    return;
-
-  // Submit the current draws up until rendering the XFB.
-  g_command_buffer_mgr->ExecuteCommandBuffer(false, false);
-  g_command_buffer_mgr->WaitForGPUIdle();
-
-  // Clear the present failed flag, since we don't want to resize after recreating.
-  g_command_buffer_mgr->CheckLastPresentFail();
-
-  // Recreate the surface. If this fails we're in trouble.
-  if (!m_swap_chain->RecreateSurface(m_new_surface_handle))
-    PanicAlert("Failed to recreate Vulkan surface. Cannot continue.");
-  m_new_surface_handle = nullptr;
-
-  // Handle case where the dimensions are now different.
-  OnSwapChainResized();
-}
-
-void Renderer::CheckForSurfaceResize()
-{
-  if (!m_surface_resized.TestAndClear())
-    return;
-
-  // If we don't have a surface, how can we resize the swap chain?
-  // CheckForSurfaceChange should handle this case.
-  if (!m_swap_chain)
-  {
-    WARN_LOG(VIDEO, "Surface resize event received without active surface, ignoring");
-    return;
-  }
-
-  // Wait for the GPU to catch up since we're going to destroy the swap chain.
-  g_command_buffer_mgr->ExecuteCommandBuffer(false, false);
-  g_command_buffer_mgr->WaitForGPUIdle();
-
-  // Clear the present failed flag, since we don't want to resize after recreating.
-  g_command_buffer_mgr->CheckLastPresentFail();
-
-  // Resize the swap chain.
-  m_swap_chain->RecreateSwapChain();
-  OnSwapChainResized();
 }
 
 void Renderer::CheckForConfigChanges()

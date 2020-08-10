@@ -171,10 +171,6 @@ public:
   PEControl::PixelFormat GetPrevPixelFormat() const { return m_prev_efb_format; }
   void StorePixelFormat(PEControl::PixelFormat new_format) { m_prev_efb_format = new_format; }
   PostProcessingShaderImplementation* GetPostProcessor() const { return m_post_processor.get(); }
-  // Final surface changing
-  // This is called when the surface is resized (WX) or the window changes (Android).
-  void ChangeSurface(void* new_surface_handle);
-  void ResizeSurface();
   bool UseVertexDepthRange() const;
 
   virtual std::unique_ptr<VideoCommon::AsyncShaderCompiler> CreateAsyncShaderCompiler();
@@ -209,8 +205,6 @@ protected:
   std::unique_ptr<PostProcessingShaderImplementation> m_post_processor;
 
   void* m_new_surface_handle = nullptr;
-  Common::Flag m_surface_changed;
-  Common::Flag m_surface_resized;
   std::mutex m_swap_mutex;
 
   u32 m_last_host_config_bits = 0;

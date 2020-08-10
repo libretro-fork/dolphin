@@ -156,9 +156,6 @@ private:
   void BlitScreen(TargetRectangle src, TargetRectangle dst, GLuint src_texture, int src_width,
                   int src_height);
 
-  void CheckForSurfaceChange();
-  void CheckForSurfaceResize();
-
   void ApplyBlendingState(const BlendingState state, bool force = false);
   void ApplyRasterizationState(const RasterizationState state, bool force = false);
   void ApplyDepthState(const DepthState state, bool force = false);
