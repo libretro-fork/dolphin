@@ -87,9 +87,10 @@ struct VkSwapchainKHR_T
 };
 static VkSwapchainKHR_T chain;
 
-static VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCreateInfo,
-                                                       const VkAllocationCallbacks* pAllocator,
-                                                       VkInstance* pInstance)
+static VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(
+      const VkInstanceCreateInfo* pCreateInfo,
+      const VkAllocationCallbacks* pAllocator,
+      VkInstance* pInstance)
 {
   *pInstance = initInfo.instance;
   return VK_SUCCESS;
@@ -104,10 +105,11 @@ static void AddNameUnique(std::vector<const char*>& list, const char* value)
   list.push_back(value);
 }
 
-static VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice,
-                                                     const VkDeviceCreateInfo* pCreateInfo,
-                                                     const VkAllocationCallbacks* pAllocator,
-                                                     VkDevice* pDevice)
+static VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(
+      VkPhysicalDevice physicalDevice,
+      const VkDeviceCreateInfo* pCreateInfo,
+      const VkAllocationCallbacks* pAllocator,
+      VkDevice* pDevice)
 {
   VkDeviceCreateInfo info = *pCreateInfo;
   std::vector<const char*> EnabledLayerNames(info.ppEnabledLayerNames,
@@ -146,16 +148,18 @@ static VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDe
 }
 
 static VKAPI_ATTR VkResult VKAPI_CALL
-vkCreateLibretroSurfaceKHR(VkInstance instance, const void* pCreateInfo,
-                           const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface)
+vkCreateLibretroSurfaceKHR(
+      VkInstance instance, const void* pCreateInfo,
+      const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface)
 {
   *pSurface = initInfo.surface;
   return VK_SUCCESS;
 }
 
 static VKAPI_ATTR VkResult VKAPI_CALL
-vkGetPhysicalDeviceSurfaceCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface,
-                                          VkSurfaceCapabilitiesKHR* pSurfaceCapabilities)
+vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+      VkPhysicalDevice physicalDevice, VkSurfaceKHR surface,
+      VkSurfaceCapabilitiesKHR* pSurfaceCapabilities)
 {
   VkResult res =
       vkGetPhysicalDeviceSurfaceCapabilitiesKHR_org(physicalDevice, surface, pSurfaceCapabilities);
@@ -167,8 +171,9 @@ vkGetPhysicalDeviceSurfaceCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkSur
   return res;
 }
 
-static bool MemoryTypeFromProperties(uint32_t typeBits, VkFlags requirements_mask,
-                                     uint32_t* typeIndex)
+static bool MemoryTypeFromProperties(
+      uint32_t typeBits, VkFlags requirements_mask,
+      uint32_t* typeIndex)
 {
   VkPhysicalDeviceMemoryProperties memory_properties;
   vkGetPhysicalDeviceMemoryProperties(vulkan->gpu, &memory_properties);
@@ -191,8 +196,9 @@ static bool MemoryTypeFromProperties(uint32_t typeBits, VkFlags requirements_mas
 }
 
 static VKAPI_ATTR VkResult VKAPI_CALL
-vkCreateSwapchainKHR(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo,
-                     const VkAllocationCallbacks* pAllocator, VkSwapchainKHR* pSwapchain)
+vkCreateSwapchainKHR(VkDevice device,
+      const VkSwapchainCreateInfoKHR* pCreateInfo,
+      const VkAllocationCallbacks* pAllocator, VkSwapchainKHR* pSwapchain)
 {
   uint32_t swapchain_mask = vulkan->get_sync_index_mask(vulkan->handle);
 
@@ -270,10 +276,11 @@ vkCreateSwapchainKHR(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInf
   return VK_SUCCESS;
 }
 
-static VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainImagesKHR(VkDevice device,
-                                                              VkSwapchainKHR swapchain_,
-                                                              uint32_t* pSwapchainImageCount,
-                                                              VkImage* pSwapchainImages)
+static VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainImagesKHR(
+      VkDevice device,
+      VkSwapchainKHR swapchain_,
+      uint32_t* pSwapchainImageCount,
+      VkImage* pSwapchainImages)
 {
   VkSwapchainKHR_T* swapchain = (VkSwapchainKHR_T*)swapchain_;
   if (pSwapchainImages)
@@ -288,10 +295,11 @@ static VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainImagesKHR(VkDevice device,
   return VK_SUCCESS;
 }
 
-static VKAPI_ATTR VkResult VKAPI_CALL vkAcquireNextImageKHR(VkDevice device,
-                                                            VkSwapchainKHR swapchain,
-                                                            uint64_t timeout, VkSemaphore semaphore,
-                                                            VkFence fence, uint32_t* pImageIndex)
+static VKAPI_ATTR VkResult VKAPI_CALL vkAcquireNextImageKHR(
+      VkDevice device,
+      VkSwapchainKHR swapchain,
+      uint64_t timeout, VkSemaphore semaphore,
+      VkFence fence, uint32_t* pImageIndex)
 {
   vulkan->wait_sync_index(vulkan->handle);
   *pImageIndex = vulkan->get_sync_index(vulkan->handle);
@@ -301,8 +309,9 @@ static VKAPI_ATTR VkResult VKAPI_CALL vkAcquireNextImageKHR(VkDevice device,
   return VK_SUCCESS;
 }
 
-static VKAPI_ATTR VkResult VKAPI_CALL vkQueuePresentKHR(VkQueue queue,
-                                                        const VkPresentInfoKHR* pPresentInfo)
+static VKAPI_ATTR VkResult VKAPI_CALL vkQueuePresentKHR(
+      VkQueue queue,
+      const VkPresentInfoKHR* pPresentInfo)
 {
   VkSwapchainKHR_T* swapchain = (VkSwapchainKHR_T*)pPresentInfo->pSwapchains[0];
   std::unique_lock<std::mutex> lock(swapchain->mutex);
@@ -338,22 +347,24 @@ void WaitForPresentation()
 }
 
 static VKAPI_ATTR void VKAPI_CALL vkDestroyInstance(VkInstance instance,
-                                                    const VkAllocationCallbacks* pAllocator)
+      const VkAllocationCallbacks* pAllocator)
 {
 }
 
 static VKAPI_ATTR void VKAPI_CALL vkDestroyDevice(VkDevice device,
-                                                  const VkAllocationCallbacks* pAllocator)
+      const VkAllocationCallbacks* pAllocator)
 {
 }
 
-static VKAPI_ATTR void VKAPI_CALL vkDestroySurfaceKHR(VkInstance instance, VkSurfaceKHR surface,
-                                                      const VkAllocationCallbacks* pAllocator)
+static VKAPI_ATTR void VKAPI_CALL vkDestroySurfaceKHR(
+      VkInstance instance, VkSurfaceKHR surface,
+      const VkAllocationCallbacks* pAllocator)
 {
 }
 
-static VKAPI_ATTR void VKAPI_CALL vkDestroySwapchainKHR(VkDevice device, VkSwapchainKHR swapchain,
-                                                        const VkAllocationCallbacks* pAllocator)
+static VKAPI_ATTR void VKAPI_CALL vkDestroySwapchainKHR(
+      VkDevice device, VkSwapchainKHR swapchain,
+      const VkAllocationCallbacks* pAllocator)
 {
   for (uint32_t i = 0; i < chain.count; i++)
   {
@@ -367,8 +378,9 @@ static VKAPI_ATTR void VKAPI_CALL vkDestroySwapchainKHR(VkDevice device, VkSwapc
   chain.current_index = -1;
 }
 
-static VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit(VkQueue queue, uint32_t submitCount,
-                                                    const VkSubmitInfo* pSubmits, VkFence fence)
+static VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit(
+      VkQueue queue, uint32_t submitCount,
+      const VkSubmitInfo* pSubmits, VkFence fence)
 {
   VkResult res = VK_SUCCESS;
 
@@ -452,8 +464,9 @@ static VKAPI_ATTR VkResult VKAPI_CALL vkCreateRenderPass(VkDevice device,
     }                                                                                              \
   } while (0)
 
-static VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetInstanceProcAddr(VkInstance instance,
-                                                                      const char* pName)
+static VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetInstanceProcAddr(
+      VkInstance instance,
+      const char* pName)
 {
   if (!strcmp(pName, "vkCreateLibretroSurfaceKHR") || !strcmp(pName, "vkCreateWin32SurfaceKHR") ||
       !strcmp(pName, "vkCreateAndroidSurfaceKHR") || !strcmp(pName, "vkCreateXlibSurfaceKHR") ||
@@ -471,8 +484,9 @@ static VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetInstanceProcAddr(VkInstance
   return fptr;
 }
 
-static VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetDeviceProcAddr(VkDevice device,
-                                                                    const char* pName)
+static VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetDeviceProcAddr(
+      VkDevice device,
+      const char* pName)
 {
   PFN_vkVoidFunction fptr = vkGetDeviceProcAddr_org(device, pName);
   if (!fptr)
@@ -484,9 +498,12 @@ static VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetDeviceProcAddr(VkDevice dev
 }
 
 void Init(VkInstance instance, VkPhysicalDevice gpu, VkSurfaceKHR surface,
-          PFN_vkGetInstanceProcAddr get_instance_proc_addr, const char** required_device_extensions,
-          unsigned num_required_device_extensions, const char** required_device_layers,
-          unsigned num_required_device_layers, const VkPhysicalDeviceFeatures* required_features)
+      PFN_vkGetInstanceProcAddr get_instance_proc_addr,
+      const char** required_device_extensions,
+      unsigned num_required_device_extensions,
+      const char** required_device_layers,
+      unsigned num_required_device_layers,
+      const VkPhysicalDeviceFeatures* required_features)
 {
   assert(surface);
 
