@@ -30,14 +30,10 @@ public:
   u32 GetBackBufferWidth() const { return m_backbuffer_width; }
   u32 GetBackBufferHeight() const { return m_backbuffer_height; }
 
-  virtual bool IsHeadless() const;
-
   virtual std::unique_ptr<GLContext> CreateSharedContext();
 
   virtual bool MakeCurrent();
   virtual bool ClearCurrent();
-
-  virtual void Swap();
 
   virtual void* GetFuncAddress(const std::string& name);
 

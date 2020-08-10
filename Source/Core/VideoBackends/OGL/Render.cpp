@@ -49,6 +49,8 @@
 #include "VideoCommon/VideoConfig.h"
 #include "VideoCommon/XFMemory.h"
 
+#include "DolphinLibretro/Video.h"
+
 namespace OGL
 {
 VideoConfig g_ogl_config;
@@ -802,7 +804,7 @@ Renderer::~Renderer() = default;
 
 bool Renderer::IsHeadless() const
 {
-  return m_main_gl_context->IsHeadless();
+  return false;
 }
 
 bool Renderer::Initialize()
@@ -1423,7 +1425,8 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
     glViewport(0, 0, m_backbuffer_width, m_backbuffer_height);
 
     // Swap the back and front buffers, presenting the image.
-    m_main_gl_context->Swap();
+    Libretro::Video::video_cb(RETRO_HW_FRAME_BUFFER_VALID,
+          m_backbuffer_width, m_backbuffer_height, 0);
   }
   else
   {

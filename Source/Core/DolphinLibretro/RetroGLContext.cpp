@@ -9,11 +9,6 @@ namespace Libretro
 namespace Video
 {
 
-void RetroGLContext::Swap()
-{
-  video_cb(RETRO_HW_FRAME_BUFFER_VALID, m_backbuffer_width, m_backbuffer_height, 0);
-}
-
 bool RetroGLContext::Initialize(void* display_handle,
 		void* window_handle, bool stereo, bool core)
 {

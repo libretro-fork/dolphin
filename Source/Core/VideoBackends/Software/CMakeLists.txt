@@ -16,6 +16,11 @@ add_library(videosoftware
   TransformUnit.cpp
 )
 
+target_include_directories(videosoftware
+PRIVATE
+${CMAKE_SOURCE_DIR}/Externals/Libretro/Include
+)
+
 target_link_libraries(videosoftware
 PUBLIC
   common

@@ -9,6 +9,8 @@
 #include "Common/Logging/Log.h"
 #include "Common/MsgHandler.h"
 
+#include "DolphinLibretro/Video.h"
+
 #include "VideoBackends/OGL/Render.h"
 #include "VideoBackends/Software/SWOGLWindow.h"
 #include "VideoBackends/Software/SWTexture.h"
@@ -30,7 +32,7 @@ std::unique_ptr<SWOGLWindow> SWOGLWindow::Create(const WindowSystemInfo& wsi)
 
 bool SWOGLWindow::IsHeadless() const
 {
-  return m_gl_context->IsHeadless();
+  return false;
 }
 
 bool SWOGLWindow::Initialize(const WindowSystemInfo& wsi)
@@ -113,5 +115,6 @@ void SWOGLWindow::ShowImage(AbstractTexture* image, const EFBRectangle& xfb_regi
   glBindVertexArray(m_image_vao);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-  m_gl_context->Swap();
+  Libretro::Video::video_cb(RETRO_HW_FRAME_BUFFER_VALID,
+        glWidth, glHeight, 0);
 }

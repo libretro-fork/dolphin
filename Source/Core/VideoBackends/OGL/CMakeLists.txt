@@ -17,6 +17,11 @@ add_library(videoogl
   VertexManager.cpp
 )
 
+target_include_directories(videoogl
+PRIVATE
+${CMAKE_SOURCE_DIR}/Externals/Libretro/Include
+)
+
 target_link_libraries(videoogl
 PUBLIC
   common
