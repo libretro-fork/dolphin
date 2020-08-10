@@ -1417,9 +1417,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
     BlitScreen(sourceRc, flipped_trc, xfb_texture->GetRawTexIdentifier(),
                xfb_texture->GetConfig().width, xfb_texture->GetConfig().height);
 
-    // Render OSD messages.
-    glViewport(0, 0, m_backbuffer_width, m_backbuffer_height);
-
     // Swap the back and front buffers, presenting the image.
     Libretro::Video::video_cb(RETRO_HW_FRAME_BUFFER_VALID,
           m_backbuffer_width, m_backbuffer_height, 0);

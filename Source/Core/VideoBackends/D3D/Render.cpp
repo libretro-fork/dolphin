@@ -580,11 +580,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
   BlitScreen(xfb_region, targetRc, xfb_texture->GetRawTexIdentifier(),
              xfb_texture->GetConfig().width, xfb_texture->GetConfig().height);
 
-  // Reset viewport for drawing text
-  D3D11_VIEWPORT vp = CD3D11_VIEWPORT(0.0f, 0.0f, static_cast<float>(m_backbuffer_width),
-                                      static_cast<float>(m_backbuffer_height));
-  D3D::context->RSSetViewports(1, &vp);
-
   g_texture_cache->Cleanup(frameCount);
 
   // Enable configuration changes
