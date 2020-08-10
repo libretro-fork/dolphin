@@ -168,8 +168,6 @@ void Renderer::SetupDeviceObjects()
   hr = D3D::device->CreateRasterizerState(&rastdesc, &m_reset_rast_state);
   CHECK(hr == S_OK, "Create rasterizer state for Renderer::ResetAPIState");
   D3D::SetDebugObjectName(m_reset_rast_state, "rasterizer state for Renderer::ResetAPIState");
-
-  m_screenshot_texture = nullptr;
 }
 
 // Kill off all device objects
@@ -187,7 +185,6 @@ void Renderer::TeardownDeviceObjects()
   SAFE_RELEASE(m_reset_blend_state);
   SAFE_RELEASE(m_reset_depth_state);
   SAFE_RELEASE(m_reset_rast_state);
-  SAFE_RELEASE(m_screenshot_texture);
   SAFE_RELEASE(m_3d_vision_texture);
 }
 
@@ -668,7 +665,6 @@ void Renderer::CheckForSurfaceChange()
   if (!m_surface_changed.TestAndClear())
     return;
 
-  SAFE_RELEASE(m_screenshot_texture);
   SAFE_RELEASE(m_3d_vision_texture);
 
   D3D::Reset(reinterpret_cast<HWND>(m_new_surface_handle));
@@ -684,7 +680,6 @@ void Renderer::CheckForSurfaceResize()
   if (!m_surface_resized.TestAndClear() && !exclusive_fullscreen_changed)
     return;
 
-  SAFE_RELEASE(m_screenshot_texture);
   SAFE_RELEASE(m_3d_vision_texture);
   m_last_fullscreen_state = fullscreen_state;
   if (D3D::swapchain)

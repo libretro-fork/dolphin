@@ -92,7 +92,6 @@ private:
   ID3D11DepthStencilState* m_reset_depth_state = nullptr;
   ID3D11RasterizerState* m_reset_rast_state = nullptr;
 
-  ID3D11Texture2D* m_screenshot_texture = nullptr;
   D3DTexture2D* m_3d_vision_texture = nullptr;
 
   u32 m_last_multisamples = 1;
