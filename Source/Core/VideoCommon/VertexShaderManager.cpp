@@ -449,8 +449,10 @@ void VertexShaderManager::SetConstants()
       ERROR_LOG(VIDEO, "Unknown projection type: %d", xfmem.projection.type);
     }
 
+#if defined(_DEBUG) || defined(DEBUGFAST)
     PRIM_LOG("Projection: %f %f %f %f %f %f", rawProjection[0], rawProjection[1], rawProjection[2],
              rawProjection[3], rawProjection[4], rawProjection[5]);
+#endif
 
     if (g_ActiveConfig.bFreeLook && xfmem.projection.type == GX_PERSPECTIVE)
     {

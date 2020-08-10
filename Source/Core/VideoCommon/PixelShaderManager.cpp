@@ -201,7 +201,9 @@ void PixelShaderManager::SetTevColor(int index, int component, s32 value)
   c[component] = value;
   dirty = true;
 
+#if defined(_DEBUG) || defined(DEBUGFAST)
   PRIM_LOG("tev color%d: %d %d %d %d", index, c[0], c[1], c[2], c[3]);
+#endif
 }
 
 void PixelShaderManager::SetTevKonstColor(int index, int component, s32 value)
@@ -221,7 +223,9 @@ void PixelShaderManager::SetTevKonstColor(int index, int component, s32 value)
   constants.konst[index + 16 + component * 4][2] = value;
   constants.konst[index + 16 + component * 4][3] = value;
 
+#if defined(_DEBUG) || defined(DEBUGFAST)
   PRIM_LOG("tev konst color%d: %d %d %d %d", index, c[0], c[1], c[2], c[3]);
+#endif
 }
 
 void PixelShaderManager::SetTevOrder(int index, u32 order)
@@ -353,10 +357,12 @@ void PixelShaderManager::SetIndMatrixChanged(int matrixidx)
   constants.indtexmtx[2 * matrixidx + 1][3] = 17 - scale;
   dirty = true;
 
+#if defined(_DEBUG) || defined(DEBUGFAST)
   PRIM_LOG("indmtx%d: scale=%d, mat=(%d %d %d; %d %d %d)", matrixidx, scale,
            bpmem.indmtx[matrixidx].col0.ma, bpmem.indmtx[matrixidx].col1.mc,
            bpmem.indmtx[matrixidx].col2.me, bpmem.indmtx[matrixidx].col0.mb,
            bpmem.indmtx[matrixidx].col1.md, bpmem.indmtx[matrixidx].col2.mf);
+#endif
 }
 
 void PixelShaderManager::SetZTextureTypeChanged()

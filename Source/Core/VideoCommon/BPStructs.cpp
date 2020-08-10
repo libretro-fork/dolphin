@@ -88,11 +88,13 @@ static void BPWritten(const BPCmd& bp)
   switch (bp.address)
   {
   case BPMEM_GENMODE:  // Set the Generation Mode
+#if defined(_DEBUG) || defined(DEBUGFAST)
     PRIM_LOG("genmode: texgen=%d, col=%d, multisampling=%d, tev=%d, cullmode=%d, ind=%d, zfeeze=%d",
              (u32)bpmem.genMode.numtexgens, (u32)bpmem.genMode.numcolchans,
              (u32)bpmem.genMode.multisampling, (u32)bpmem.genMode.numtevstages + 1,
              (u32)bpmem.genMode.cullmode, (u32)bpmem.genMode.numindstages,
              (u32)bpmem.genMode.zfreeze);
+#endif
 
     if (bp.changes)
       PixelShaderManager::SetGenModeChanged();
@@ -136,28 +138,33 @@ static void BPWritten(const BPCmd& bp)
     GeometryShaderManager::SetLinePtWidthChanged();
     return;
   case BPMEM_ZMODE:  // Depth Control
+#if defined(_DEBUG) || defined(DEBUGFAST)
     PRIM_LOG("zmode: test=%u, func=%u, upd=%u", bpmem.zmode.testenable.Value(),
              bpmem.zmode.func.Value(), bpmem.zmode.updateenable.Value());
+#endif
     SetDepthMode();
     PixelShaderManager::SetZModeControl();
     return;
   case BPMEM_BLENDMODE:  // Blending Control
     if (bp.changes & 0xFFFF)
     {
+#if defined(_DEBUG) || defined(DEBUGFAST)
       PRIM_LOG("blendmode: en=%u, open=%u, colupd=%u, alphaupd=%u, dst=%u, src=%u, sub=%u, mode=%u",
                bpmem.blendmode.blendenable.Value(), bpmem.blendmode.logicopenable.Value(),
                bpmem.blendmode.colorupdate.Value(), bpmem.blendmode.alphaupdate.Value(),
                bpmem.blendmode.dstfactor.Value(), bpmem.blendmode.srcfactor.Value(),
                bpmem.blendmode.subtract.Value(), bpmem.blendmode.logicmode.Value());
-
+#endif
       SetBlendMode();
 
       PixelShaderManager::SetBlendModeChanged();
     }
     return;
   case BPMEM_CONSTANTALPHA:  // Set Destination Alpha
+#if defined(_DEBUG) || defined(DEBUGFAST)
     PRIM_LOG("constalpha: alp=%d, en=%d", bpmem.dstalpha.alpha.Value(),
              bpmem.dstalpha.enable.Value());
+#endif
     if (bp.changes)
     {
       PixelShaderManager::SetAlpha();
@@ -327,9 +334,11 @@ static void BPWritten(const BPCmd& bp)
       PixelShaderManager::SetFogColorChanged();
     return;
   case BPMEM_ALPHACOMPARE:  // Compare Alpha Values
+#if defined(_DEBUG) || defined(DEBUGFAST)
     PRIM_LOG("alphacmp: ref0=%d, ref1=%d, comp0=%d, comp1=%d, logic=%d", (int)bpmem.alpha_test.ref0,
              (int)bpmem.alpha_test.ref1, (int)bpmem.alpha_test.comp0, (int)bpmem.alpha_test.comp1,
              (int)bpmem.alpha_test.logic);
+#endif
     if (bp.changes & 0xFFFF)
       PixelShaderManager::SetAlpha();
     if (bp.changes)
@@ -339,7 +348,9 @@ static void BPWritten(const BPCmd& bp)
     }
     return;
   case BPMEM_BIAS:  // BIAS
+#if defined(_DEBUG) || defined(DEBUGFAST)
     PRIM_LOG("ztex bias=0x%x", bpmem.ztex1.bias.Value());
+#endif
     if (bp.changes)
       PixelShaderManager::SetZTextureBias();
     return;

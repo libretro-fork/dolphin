@@ -32,7 +32,9 @@ static void TexMtx_ReadDirect_UByte(VertexLoader* loader)
 {
   loader->m_curtexmtx[loader->m_texmtxread] = DataRead<u8>() & 0x3f;
 
+#if defined(_DEBUG) || defined(DEBUGFAST)
   PRIM_LOG("texmtx%d: %d, ", loader->m_texmtxread, loader->m_curtexmtx[loader->m_texmtxread]);
+#endif
   loader->m_texmtxread++;
 }
 
@@ -415,7 +417,9 @@ int VertexLoader::RunVertices(DataReader src, DataReader dst, int count)
     m_texmtxwrite = m_texmtxread = 0;
     for (int i = 0; i < m_numPipelineStages; i++)
       m_PipelineStages[i](this);
+#if defined(_DEBUG) || defined(DEBUGFAST)
     PRIM_LOG("\n");
+#endif
   }
 
   return count - m_skippedVertices;

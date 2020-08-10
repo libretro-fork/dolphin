@@ -55,7 +55,9 @@ DOLPHIN_FORCE_INLINE void ReadIndirect(const T* data)
   }
 
   g_vertex_manager_write_ptr = dst.GetPointer();
+#if defined(_DEBUG) || defined(DEBUGFAST)
   LOG_NORM();
+#endif
 }
 
 template <typename T, int N>
