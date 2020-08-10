@@ -1399,8 +1399,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
 
   ResetAPIState();
 
-  // Check if we need to render to a new surface.
-  UpdateDrawRectangle();
   TargetRectangle flipped_trc = GetTargetRectangle();
   std::swap(flipped_trc.top, flipped_trc.bottom);
 

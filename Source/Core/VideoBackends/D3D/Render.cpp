@@ -565,9 +565,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
 {
   ResetAPIState();
 
-  // Prepare to copy the XFBs to our backbuffer
-  UpdateDrawRectangle();
-
   TargetRectangle targetRc = GetTargetRectangle();
   static constexpr std::array<float, 4> clear_color{{0.f, 0.f, 0.f, 1.f}};
   D3D::context->OMSetRenderTargets(1, &D3D::GetBackBuffer()->GetRTV(), nullptr);

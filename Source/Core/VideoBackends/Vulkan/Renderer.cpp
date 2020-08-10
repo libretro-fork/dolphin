@@ -542,10 +542,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region
   StateTracker::GetInstance()->EndRenderPass();
   StateTracker::GetInstance()->OnEndFrame();
 
-  // There are a few variables which can alter the final window draw rectangle, and some of them
-  // are determined by guest state. Currently, the only way to catch these is to update every frame.
-  UpdateDrawRectangle();
-
   // Ensure the worker thread is not still submitting a previous command buffer.
   // In other words, the last frame has been submitted (otherwise the next call would
   // be a race, as the image may not have been consumed yet).
