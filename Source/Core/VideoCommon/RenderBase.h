@@ -186,10 +186,6 @@ protected:
   u32 m_current_framebuffer_width = 1;
   u32 m_current_framebuffer_height = 1;
 
-  Common::Flag m_screenshot_request;
-  Common::Event m_screenshot_completed;
-  std::mutex m_screenshot_lock;
-  std::string m_screenshot_name;
   bool m_aspect_wide = false;
 
   // The framebuffer size
@@ -204,7 +200,6 @@ protected:
 
   std::unique_ptr<PostProcessingShaderImplementation> m_post_processor;
 
-  void* m_new_surface_handle = nullptr;
   std::mutex m_swap_mutex;
 
   u32 m_last_host_config_bits = 0;
