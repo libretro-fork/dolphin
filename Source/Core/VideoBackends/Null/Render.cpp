@@ -11,6 +11,8 @@
 #include "VideoCommon/AbstractShader.h"
 #include "VideoCommon/VideoConfig.h"
 
+#include "DolphinLibretro/Video.h"
+
 namespace Null
 {
 // Init functions
@@ -94,6 +96,7 @@ TargetRectangle Renderer::ConvertEFBRectangle(const EFBRectangle& rc)
 
 void Renderer::SwapImpl(AbstractTexture*, const EFBRectangle&, u64)
 {
+  Libretro::Video::video_cb(NULL, 512, 512, 512 * 4);
   UpdateActiveConfig();
 }
 

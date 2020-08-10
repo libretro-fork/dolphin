@@ -28,14 +28,5 @@ extern retro_video_refresh_t video_cb;
 extern struct retro_hw_render_callback hw_render;
 extern WindowSystemInfo wsi;
 
-class NullRenderer : public Null::Renderer
-{
-public:
-  void SwapImpl(AbstractTexture* texture, const EFBRectangle& rc, u64 ticks) override
-  {
-    video_cb(NULL, 512, 512, 512 * 4);
-    UpdateActiveConfig();
-  }
-};
 }  // namespace Video
 }  // namespace Libretro
