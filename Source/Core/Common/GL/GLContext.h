@@ -24,7 +24,6 @@ public:
 
   virtual ~GLContext();
 
-  Mode GetMode() const { return m_opengl_mode; }
   bool IsGLES() const { return m_opengl_mode == Mode::OpenGLES; }
 
   u32 GetBackBufferWidth() const { return m_backbuffer_width; }
@@ -37,9 +36,10 @@ public:
 
   // Creates an instance of GLContext specific to the platform we are running on.
   // If successful, the context is made current on the calling thread.
-  static std::unique_ptr<GLContext> Create(const WindowSystemInfo& wsi, bool stereo = false,
-                                           bool core = true, bool prefer_egl = false,
-                                           bool prefer_gles = false);
+  static std::unique_ptr<GLContext> Create(
+        const WindowSystemInfo& wsi, bool stereo = false,
+        bool core = true, bool prefer_egl = false,
+        bool prefer_gles = false);
 
 protected:
   virtual bool Initialize(void* display_handle, void* window_handle, bool stereo, bool core);
@@ -50,8 +50,4 @@ protected:
   u32 m_backbuffer_width = 0;
   u32 m_backbuffer_height = 0;
   bool m_is_shared = false;
-
-  // A list of desktop OpenGL versions to attempt to create a context for.
-  // (4.6-3.2, geometry shaders is a minimum requirement since we're using core profile).
-  static const std::array<std::pair<int, int>, 9> s_desktop_opengl_versions;
 };
