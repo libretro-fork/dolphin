@@ -35,19 +35,7 @@ bool GLContext::ClearCurrent()
   return false;
 }
 
-void GLContext::Update()
-{
-}
-
-void GLContext::UpdateSurface(void* window_handle)
-{
-}
-
 void GLContext::Swap()
-{
-}
-
-void GLContext::SwapInterval(int interval)
 {
 }
 

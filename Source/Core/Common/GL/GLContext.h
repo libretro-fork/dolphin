@@ -37,11 +37,7 @@ public:
   virtual bool MakeCurrent();
   virtual bool ClearCurrent();
 
-  virtual void Update();
-  virtual void UpdateSurface(void* window_handle);
-
   virtual void Swap();
-  virtual void SwapInterval(int interval);
 
   virtual void* GetFuncAddress(const std::string& name);
 
