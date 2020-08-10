@@ -35,8 +35,6 @@ public:
   virtual bool MakeCurrent();
   virtual bool ClearCurrent();
 
-  virtual void* GetFuncAddress(const std::string& name);
-
   // Creates an instance of GLContext specific to the platform we are running on.
   // If successful, the context is made current on the calling thread.
   static std::unique_ptr<GLContext> Create(const WindowSystemInfo& wsi, bool stereo = false,
