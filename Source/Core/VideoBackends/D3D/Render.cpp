@@ -189,7 +189,7 @@ void Renderer::TeardownDeviceObjects()
 
 bool Renderer::IsHeadless() const
 {
-  return D3D::swapchain == nullptr;
+  return true;
 }
 
 std::unique_ptr<AbstractTexture> Renderer::CreateTexture(const TextureConfig& config)
