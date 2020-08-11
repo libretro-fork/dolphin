@@ -559,68 +559,14 @@ void Renderer::ReinterpretPixelData(unsigned int convtype)
   RestoreAPIState();
 }
 
-#if 0
-// This function has the final picture. We adjust the aspect ratio here.
 void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& xfb_region, u64 ticks)
-{
-  ResetAPIState();
-
-  TargetRectangle targetRc = GetTargetRectangle();
-  static constexpr std::array<float, 4> clear_color{{0.f, 0.f, 0.f, 1.f}};
-  D3D::context->OMSetRenderTargets(1, &D3D::GetBackBuffer()->GetRTV(), nullptr);
-  D3D::context->ClearRenderTargetView(D3D::GetBackBuffer()->GetRTV(), clear_color.data());
-  m_current_framebuffer = nullptr;
-  m_current_framebuffer_width = m_backbuffer_width;
-  m_current_framebuffer_height = m_backbuffer_height;
-
-  // activate linear filtering for the buffer copies
-  D3D::SetLinearCopySampler();
-  auto* xfb_texture = static_cast<DXTexture*>(texture);
-
-  BlitScreen(xfb_region, targetRc, xfb_texture->GetRawTexIdentifier(),
-             xfb_texture->GetConfig().width, xfb_texture->GetConfig().height);
-
-  g_texture_cache->Cleanup(frameCount);
-
-  // Enable configuration changes
-  UpdateActiveConfig();
-  g_texture_cache->OnConfigChanged(g_ActiveConfig);
-
-  // Flip/present backbuffer to frontbuffer here
-  //if (D3D::swapchain)
-    //D3D::Present();
-
-  // Resize the back buffers NOW to avoid flickering
-  if (CalculateTargetSize() || m_last_multisamples != g_ActiveConfig.iMultisamples ||
-      m_last_stereo_mode != (g_ActiveConfig.stereo_mode != StereoMode::Off))
-  {
-    m_last_multisamples = g_ActiveConfig.iMultisamples;
-    m_last_stereo_mode = g_ActiveConfig.stereo_mode != StereoMode::Off;
-    PixelShaderCache::InvalidateMSAAShaders();
-    UpdateDrawRectangle();
-
-    g_framebuffer_manager.reset();
-    g_framebuffer_manager = std::make_unique<FramebufferManager>(m_target_width, m_target_height);
-    D3D::context->ClearRenderTargetView(FramebufferManager::GetEFBColorTexture()->GetRTV(),
-                                        clear_color.data());
-    D3D::context->ClearDepthStencilView(FramebufferManager::GetEFBDepthTexture()->GetDSV(),
-                                        D3D11_CLEAR_DEPTH, 0.f, 0);
-  }
-
-  CheckForHostConfigChanges();
-
-  // begin next frame
-  RestoreAPIState();
-}
-#else
-void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& rc, u64 ticks)
 {
    DX11::D3DTexture2D* xfb_texture = static_cast<DX11::DXTexture*>(texture)->GetRawTexIdentifier();
 
    ID3D11RenderTargetView* nullView = nullptr;
    DX11::D3D::context->OMSetRenderTargets(1, &nullView, nullptr);
    DX11::D3D::context->PSSetShaderResources(0, 1, &xfb_texture->GetSRV());
-   Libretro::Video::video_cb(RETRO_HW_FRAME_BUFFER_VALID, rc.GetWidth(), rc.GetHeight(), 0);
+   Libretro::Video::video_cb(RETRO_HW_FRAME_BUFFER_VALID, xfb_region.GetWidth(), xfb_region.GetHeight(), 0);
 
    ResetAPIState();
    g_texture_cache->Cleanup(frameCount);
@@ -648,7 +594,6 @@ void Renderer::SwapImpl(AbstractTexture* texture, const EFBRectangle& rc, u64 ti
    RestoreAPIState();
    DX11::D3D::stateman->Restore();
 }
-#endif
 
 // ALWAYS call RestoreAPIState for each ResetAPIState call you're doing
 void Renderer::ResetAPIState()
