@@ -185,32 +185,6 @@ void Renderer::TeardownDeviceObjects()
   SAFE_RELEASE(m_reset_blend_state);
   SAFE_RELEASE(m_reset_depth_state);
   SAFE_RELEASE(m_reset_rast_state);
-  SAFE_RELEASE(m_3d_vision_texture);
-}
-
-void Renderer::Create3DVisionTexture(int width, int height)
-{
-  // Create a staging texture for 3D vision with signature information in the last row.
-  // Nvidia 3D Vision supports full SBS, so there is no loss in resolution during this process.
-  NVSTEREOIMAGEHEADER header;
-  header.dwSignature = NVSTEREO_IMAGE_SIGNATURE;
-  header.dwWidth = static_cast<u32>(width * 2);
-  header.dwHeight = static_cast<u32>(height + 1);
-  header.dwBPP = 32;
-  header.dwFlags = 0;
-
-  const u32 pitch = static_cast<u32>(4 * width * 2);
-  const auto memory = std::make_unique<u8[]>((height + 1) * pitch);
-  u8* image_header_location = &memory[height * pitch];
-  std::memcpy(image_header_location, &header, sizeof(header));
-
-  D3D11_SUBRESOURCE_DATA sys_data;
-  sys_data.SysMemPitch = pitch;
-  sys_data.pSysMem = memory.get();
-
-  m_3d_vision_texture =
-      D3DTexture2D::Create(width * 2, height + 1, D3D11_BIND_RENDER_TARGET, D3D11_USAGE_DEFAULT,
-                           DXGI_FORMAT_R8G8B8A8_UNORM, 1, 1, &sys_data);
 }
 
 bool Renderer::IsHeadless() const
@@ -731,40 +705,6 @@ void Renderer::BlitScreen(TargetRectangle src, TargetRectangle dst, D3DTexture2D
                            PixelShaderCache::GetColorCopyProgram(false),
                            VertexShaderCache::GetSimpleVertexShader(),
                            VertexShaderCache::GetSimpleInputLayout(), nullptr, 1);
-  }
-  else if (g_ActiveConfig.stereo_mode == StereoMode::Nvidia3DVision)
-  {
-    if (!m_3d_vision_texture)
-      Create3DVisionTexture(m_backbuffer_width, m_backbuffer_height);
-
-    D3D11_VIEWPORT leftVp = CD3D11_VIEWPORT((float)dst.left, (float)dst.top, (float)dst.GetWidth(),
-                                            (float)dst.GetHeight());
-    D3D11_VIEWPORT rightVp = CD3D11_VIEWPORT((float)(dst.left + m_backbuffer_width), (float)dst.top,
-                                             (float)dst.GetWidth(), (float)dst.GetHeight());
-
-    // Render to staging texture which is double the width of the backbuffer
-    D3D::context->OMSetRenderTargets(1, &m_3d_vision_texture->GetRTV(), nullptr);
-
-    D3D::context->RSSetViewports(1, &leftVp);
-    D3D::drawShadedTexQuad(src_texture->GetSRV(), src.AsRECT(), src_width, src_height,
-                           PixelShaderCache::GetColorCopyProgram(false),
-                           VertexShaderCache::GetSimpleVertexShader(),
-                           VertexShaderCache::GetSimpleInputLayout(), nullptr, 0);
-
-    D3D::context->RSSetViewports(1, &rightVp);
-    D3D::drawShadedTexQuad(src_texture->GetSRV(), src.AsRECT(), src_width, src_height,
-                           PixelShaderCache::GetColorCopyProgram(false),
-                           VertexShaderCache::GetSimpleVertexShader(),
-                           VertexShaderCache::GetSimpleInputLayout(), nullptr, 1);
-
-    // Copy the left eye to the backbuffer, if Nvidia 3D Vision is enabled it should
-    // recognize the signature and automatically include the right eye frame.
-    D3D11_BOX box = CD3D11_BOX(0, 0, 0, m_backbuffer_width, m_backbuffer_height, 1);
-    D3D::context->CopySubresourceRegion(D3D::GetBackBuffer()->GetTex(), 0, 0, 0, 0,
-                                        m_3d_vision_texture->GetTex(), 0, &box);
-
-    // Restore render target to backbuffer
-    D3D::context->OMSetRenderTargets(1, &D3D::GetBackBuffer()->GetRTV(), nullptr);
   }
   else
   {

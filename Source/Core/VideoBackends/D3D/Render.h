@@ -76,7 +76,6 @@ public:
 private:
   void SetupDeviceObjects();
   void TeardownDeviceObjects();
-  void Create3DVisionTexture(int width, int height);
 
   void BlitScreen(TargetRectangle src, TargetRectangle dst, D3DTexture2D* src_texture,
                   u32 src_width, u32 src_height);
@@ -88,8 +87,6 @@ private:
   ID3D11BlendState* m_reset_blend_state = nullptr;
   ID3D11DepthStencilState* m_reset_depth_state = nullptr;
   ID3D11RasterizerState* m_reset_rast_state = nullptr;
-
-  D3DTexture2D* m_3d_vision_texture = nullptr;
 
   u32 m_last_multisamples = 1;
   bool m_last_stereo_mode = false;
