@@ -66,7 +66,6 @@ void Close();
 extern ID3D11Device* device;
 extern ID3D11Device1* device1;
 extern ID3D11DeviceContext* context;
-extern IDXGISwapChain1* swapchain;
 extern D3D_FEATURE_LEVEL featlevel;
 
 void Reset(HWND new_wnd);

@@ -34,7 +34,6 @@ namespace D3D
 ID3D11Device* device = nullptr;
 ID3D11Device1* device1 = nullptr;
 ID3D11DeviceContext* context = nullptr;
-IDXGISwapChain1* swapchain = nullptr;
 D3D_FEATURE_LEVEL featlevel = D3D_FEATURE_LEVEL_10_0;
 
 static IDXGIFactory2* s_dxgi_factory;
@@ -233,67 +232,6 @@ static bool SupportsBPTCTextures(ID3D11Device* dev)
   return (bc7_support & D3D11_FORMAT_SUPPORT_TEXTURE2D) != 0;
 }
 
-static bool CreateSwapChainTextures()
-{
-  ID3D11Texture2D* buf;
-  HRESULT hr = swapchain->GetBuffer(0, IID_ID3D11Texture2D, (void**)&buf);
-  CHECK(SUCCEEDED(hr), "GetBuffer for swap chain failed with HRESULT %08X", hr);
-  if (FAILED(hr))
-    return false;
-
-  return true;
-}
-
-static bool CreateSwapChain(HWND hWnd)
-{
-  DXGI_SWAP_CHAIN_DESC1 swap_chain_desc = {};
-  swap_chain_desc.BufferCount = 2;
-  swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-  swap_chain_desc.SampleDesc.Count = 1;
-  swap_chain_desc.SampleDesc.Quality = 0;
-  swap_chain_desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-  swap_chain_desc.Scaling = DXGI_SCALING_STRETCH;
-  swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-  swap_chain_desc.Stereo = g_ActiveConfig.stereo_mode == StereoMode::QuadBuffer;
-
-  // This flag is necessary if we want to use a flip-model swapchain without locking the framerate
-  swap_chain_desc.Flags = 0;
-
-  HRESULT hr = s_dxgi_factory->CreateSwapChainForHwnd(device, hWnd, &swap_chain_desc, nullptr,
-                                                      nullptr, &swapchain);
-  if (FAILED(hr))
-  {
-    // Flip-model discard swapchains aren't supported on Windows 8, so here we fall back to
-    // a sequential swapchain
-    swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-    hr = s_dxgi_factory->CreateSwapChainForHwnd(device, hWnd, &swap_chain_desc, nullptr, nullptr,
-                                                &swapchain);
-  }
-
-  if (FAILED(hr))
-  {
-    // Flip-model swapchains aren't supported on Windows 7, so here we fall back to a legacy
-    // BitBlt-model swapchain
-    swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-    hr = s_dxgi_factory->CreateSwapChainForHwnd(device, hWnd, &swap_chain_desc, nullptr, nullptr,
-                                                &swapchain);
-  }
-
-  if (FAILED(hr))
-  {
-    ERROR_LOG(VIDEO, "Failed to create swap chain with HRESULT %08X", hr);
-    return false;
-  }
-
-  if (!CreateSwapChainTextures())
-  {
-    SAFE_RELEASE(swapchain);
-    return false;
-  }
-
-  return true;
-}
-
 HRESULT Create(HWND wnd)
 {
   HRESULT hr = LoadDXGI();
@@ -355,7 +293,7 @@ HRESULT Create(HWND wnd)
 
   SAFE_RELEASE(adapter);
 
-  if (FAILED(hr) || (wnd && !CreateSwapChain(wnd)))
+  if (FAILED(hr))
   {
     MessageBox(
         wnd,
@@ -389,13 +327,8 @@ HRESULT Create(HWND wnd)
 
 void Close()
 {
-  // we can't release the swapchain while in fullscreen.
-  if (swapchain)
-    swapchain->SetFullscreenState(false, nullptr);
-
   // release all bound resources
   context->ClearState();
-  SAFE_RELEASE(swapchain);
   SAFE_DELETE(stateman);
   context->Flush();  // immediately destroy device objects
 
@@ -480,25 +413,10 @@ u32 GetMaxTextureSize(D3D_FEATURE_LEVEL feature_level)
 
 void Reset(HWND new_wnd)
 {
-  if (swapchain)
-  {
-    if (GetFullscreenState())
-      swapchain->SetFullscreenState(FALSE, nullptr);
-    SAFE_RELEASE(swapchain);
-  }
-
-  if (new_wnd)
-    CreateSwapChain(new_wnd);
 }
 
 void ResizeSwapChain()
 {
-  swapchain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-  if (!CreateSwapChainTextures())
-  {
-    PanicAlert("Failed to get swap chain textures");
-    SAFE_RELEASE(swapchain);
-  }
 }
 
 void Present()
@@ -507,15 +425,12 @@ void Present()
 
 HRESULT SetFullscreenState(bool enable_fullscreen)
 {
-  return swapchain->SetFullscreenState(enable_fullscreen, nullptr);
+  return S_OK;
 }
 
 bool GetFullscreenState()
 {
-  BOOL state = FALSE;
-  if (swapchain)
-    swapchain->GetFullscreenState(&state, nullptr);
-  return !!state;
+  return TRUE;
 }
 
 void SetDebugObjectName(ID3D11DeviceChild* resource, const char* name)

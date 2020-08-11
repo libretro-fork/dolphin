@@ -143,13 +143,6 @@ bool VideoBackend::Initialize(const WindowSystemInfo& wsi)
   }
 
   int backbuffer_width = 1, backbuffer_height = 1;
-  if (D3D::swapchain)
-  {
-    DXGI_SWAP_CHAIN_DESC1 desc = {};
-    D3D::swapchain->GetDesc1(&desc);
-    backbuffer_width = std::max(desc.Width, 1u);
-    backbuffer_height = std::max(desc.Height, 1u);
-  }
 
   // internal interfaces
   g_renderer = std::make_unique<Renderer>(backbuffer_width, backbuffer_height);
