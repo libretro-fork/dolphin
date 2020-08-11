@@ -386,17 +386,6 @@ HRESULT Create(HWND wnd)
   g_Config.backend_info.bSupportsST3CTextures = SupportsS3TCTextures(device);
   g_Config.backend_info.bSupportsBPTCTextures = SupportsBPTCTextures(device);
 
-  // prevent DXGI from responding to Alt+Enter, unfortunately DXGI_MWA_NO_ALT_ENTER
-  // does not work so we disable all monitoring of window messages. However this
-  // may make it more difficult for DXGI to handle display mode changes.
-  if (wnd)
-  {
-    hr = s_dxgi_factory->MakeWindowAssociation(wnd, DXGI_MWA_NO_WINDOW_CHANGES);
-    if (FAILED(hr))
-      MessageBox(wnd, _T("Failed to associate the window"), _T("Dolphin Direct3D 11 backend"),
-                 MB_OK | MB_ICONERROR);
-  }
-
   SetDebugObjectName(context, "device context");
 
   stateman = new StateManager;

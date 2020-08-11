@@ -220,8 +220,8 @@ void Init()
   if (Options::renderer == "Hardware" || Options::renderer == "Software")
   {
     unsigned preferred;
-    hw_render.context_reset = ContextReset;
-    hw_render.context_destroy = ContextDestroy;
+    hw_render.context_reset      = ContextReset;
+    hw_render.context_destroy    = ContextDestroy;
     hw_render.bottom_left_origin = true;
 	
 	// Skipping the negotiation if frontend does not support that API call yet
