@@ -17,11 +17,8 @@
 
 namespace DX11
 {
-using D3DREFLECT = HRESULT(WINAPI*)(LPCVOID, SIZE_T, REFIID, void**);
-
 static HINSTANCE s_d3d_compiler_dll;
 static int s_d3dcompiler_dll_ref;
-static D3DREFLECT s_d3d_reflect;
 pD3DCompile PD3DCompile = nullptr;
 
 CREATEDXGIFACTORY PCreateDXGIFactory = nullptr;
@@ -41,13 +38,11 @@ IDXGISwapChain1* swapchain = nullptr;
 D3D_FEATURE_LEVEL featlevel = D3D_FEATURE_LEVEL_10_0;
 
 static IDXGIFactory2* s_dxgi_factory;
-static ID3D11Debug* s_debug;
 static D3DTexture2D* s_backbuf;
 
 static std::vector<DXGI_SAMPLE_DESC> s_aa_modes;  // supported AA modes of the current adapter
 
 static bool s_bgra_textures_supported;
-static bool s_allow_tearing_supported;
 
 constexpr UINT NUM_SUPPORTED_FEATURE_LEVELS = 3;
 constexpr D3D_FEATURE_LEVEL supported_feature_levels[NUM_SUPPORTED_FEATURE_LEVELS] = {
@@ -119,10 +114,6 @@ HRESULT LoadD3DCompiler()
     return E_FAIL;
   }
 
-  s_d3d_reflect = (D3DREFLECT)GetProcAddress(s_d3d_compiler_dll, "D3DReflect");
-  if (s_d3d_reflect == nullptr)
-    MessageBoxA(nullptr, "GetProcAddress failed for D3DReflect!", "Critical error",
-                MB_OK | MB_ICONERROR);
   PD3DCompile = (pD3DCompile)GetProcAddress(s_d3d_compiler_dll, "D3DCompile");
   if (PD3DCompile == nullptr)
     MessageBoxA(nullptr, "GetProcAddress failed for D3DCompile!", "Critical error",
@@ -167,7 +158,6 @@ void UnloadD3DCompiler()
   if (s_d3d_compiler_dll)
     FreeLibrary(s_d3d_compiler_dll);
   s_d3d_compiler_dll = nullptr;
-  s_d3d_reflect = nullptr;
 }
 
 std::vector<DXGI_SAMPLE_DESC> EnumAAModes(IDXGIAdapter* adapter)
@@ -272,7 +262,7 @@ static bool CreateSwapChain(HWND hWnd)
   swap_chain_desc.Stereo = g_ActiveConfig.stereo_mode == StereoMode::QuadBuffer;
 
   // This flag is necessary if we want to use a flip-model swapchain without locking the framerate
-  swap_chain_desc.Flags = s_allow_tearing_supported ? DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING : 0;
+  swap_chain_desc.Flags = 0;
 
   HRESULT hr = s_dxgi_factory->CreateSwapChainForHwnd(device, hWnd, &swap_chain_desc, nullptr,
                                                       nullptr, &swapchain);
@@ -351,18 +341,6 @@ HRESULT Create(HWND wnd)
     UpdateActiveConfig();
   }
 
-  // Check support for allow tearing, we query the interface for backwards compatibility
-  UINT allow_tearing = FALSE;
-  IDXGIFactory5* factory5;
-  hr = s_dxgi_factory->QueryInterface(&factory5);
-  if (SUCCEEDED(hr))
-  {
-    hr = factory5->CheckFeatureSupport(DXGI_FEATURE_PRESENT_ALLOW_TEARING, &allow_tearing,
-                                       sizeof(allow_tearing));
-    factory5->Release();
-  }
-  s_allow_tearing_supported = SUCCEEDED(hr) && allow_tearing;
-
   // Creating debug devices can sometimes fail if the user doesn't have the correct
   // version of the DirectX SDK. If it does, simply fallback to a non-debug device.
   if (g_Config.bEnableValidationLayer)
@@ -371,24 +349,6 @@ HRESULT Create(HWND wnd)
                                supported_feature_levels, NUM_SUPPORTED_FEATURE_LEVELS,
                                D3D11_SDK_VERSION, &device, &featlevel, &context);
 
-    // Debugbreak on D3D error
-    if (SUCCEEDED(hr) && SUCCEEDED(device->QueryInterface(__uuidof(ID3D11Debug), (void**)&s_debug)))
-    {
-      ID3D11InfoQueue* infoQueue = nullptr;
-      if (SUCCEEDED(s_debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&infoQueue)))
-      {
-        infoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
-        infoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
-
-        D3D11_MESSAGE_ID hide[] = {D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS};
-
-        D3D11_INFO_QUEUE_FILTER filter = {};
-        filter.DenyList.NumIDs = sizeof(hide) / sizeof(D3D11_MESSAGE_ID);
-        filter.DenyList.pIDList = hide;
-        infoQueue->AddStorageFilterEntries(&filter);
-        infoQueue->Release();
-      }
-    }
   }
 
   if (!g_Config.bEnableValidationLayer || FAILED(hr))
@@ -458,28 +418,6 @@ void Close()
 
   SAFE_RELEASE(context);
   SAFE_RELEASE(device1);
-  ULONG references = device->Release();
-
-  if (s_debug)
-  {
-    --references;  // the debug interface increases the refcount of the device, subtract that.
-    if (references)
-    {
-      // print out alive objects, but only if we actually have pending references
-      // note this will also print out internal live objects to the debug console
-      s_debug->ReportLiveDeviceObjects((D3D11_RLDO_FLAGS)(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL));
-    }
-    SAFE_RELEASE(s_debug)
-  }
-
-  if (references)
-  {
-    ERROR_LOG(VIDEO, "Unreleased references: %i.", references);
-  }
-  else
-  {
-    NOTICE_LOG(VIDEO, "Successfully released all device references!");
-  }
   device = nullptr;
 
   // unload DLLs
@@ -538,7 +476,7 @@ bool BGRATexturesSupported()
 
 bool AllowTearingSupported()
 {
-  return s_allow_tearing_supported;
+  return false;
 }
 
 // Returns the maximum width/height of a texture. This value only depends upon the feature level in
@@ -584,8 +522,7 @@ void Reset(HWND new_wnd)
 void ResizeSwapChain()
 {
   SAFE_RELEASE(s_backbuf);
-  const UINT swap_chain_flags = AllowTearingSupported() ? DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING : 0;
-  swapchain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_R8G8B8A8_UNORM, swap_chain_flags);
+  swapchain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
   if (!CreateSwapChainTextures())
   {
     PanicAlert("Failed to get swap chain textures");
