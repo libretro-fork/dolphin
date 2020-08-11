@@ -463,11 +463,6 @@ bool BGRATexturesSupported()
   return s_bgra_textures_supported;
 }
 
-bool AllowTearingSupported()
-{
-  return false;
-}
-
 // Returns the maximum width/height of a texture. This value only depends upon the feature level in
 // DX11
 u32 GetMaxTextureSize(D3D_FEATURE_LEVEL feature_level)

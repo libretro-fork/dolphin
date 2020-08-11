@@ -79,7 +79,6 @@ const char* GeometryShaderVersionString();
 const char* VertexShaderVersionString();
 const char* ComputeShaderVersionString();
 bool BGRATexturesSupported();
-bool AllowTearingSupported();
 
 u32 GetMaxTextureSize(D3D_FEATURE_LEVEL feature_level);
 
