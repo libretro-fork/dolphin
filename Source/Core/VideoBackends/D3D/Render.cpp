@@ -53,18 +53,6 @@ namespace DX11
 constexpr u32 UTILITY_VBO_SIZE = 512 * 1024;
 constexpr u32 UTILITY_UBO_SIZE = 64 * 1024;
 
-// Nvidia stereo blitting struct defined in "nvstereo.h" from the Nvidia SDK
-typedef struct _Nv_Stereo_Image_Header
-{
-  unsigned int dwSignature;
-  unsigned int dwWidth;
-  unsigned int dwHeight;
-  unsigned int dwBPP;
-  unsigned int dwFlags;
-} NVSTEREOIMAGEHEADER, *LPNVSTEREOIMAGEHEADER;
-
-#define NVSTEREO_IMAGE_SIGNATURE 0x4433564e
-
 Renderer::Renderer(int backbuffer_width, int backbuffer_height)
     : ::Renderer(backbuffer_width, backbuffer_height, AbstractTextureFormat::RGBA8)
 {
