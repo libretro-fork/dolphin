@@ -73,7 +73,6 @@ void Reset(HWND new_wnd);
 void ResizeSwapChain();
 void Present();
 
-D3DTexture2D* GetBackBuffer();
 const char* PixelShaderVersionString();
 const char* GeometryShaderVersionString();
 const char* VertexShaderVersionString();

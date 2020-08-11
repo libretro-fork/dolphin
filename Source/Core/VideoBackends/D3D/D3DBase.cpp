@@ -38,7 +38,6 @@ IDXGISwapChain1* swapchain = nullptr;
 D3D_FEATURE_LEVEL featlevel = D3D_FEATURE_LEVEL_10_0;
 
 static IDXGIFactory2* s_dxgi_factory;
-static D3DTexture2D* s_backbuf;
 
 static std::vector<DXGI_SAMPLE_DESC> s_aa_modes;  // supported AA modes of the current adapter
 
@@ -242,10 +241,6 @@ static bool CreateSwapChainTextures()
   if (FAILED(hr))
     return false;
 
-  s_backbuf = new D3DTexture2D(buf, D3D11_BIND_RENDER_TARGET);
-  SAFE_RELEASE(buf);
-  SetDebugObjectName(s_backbuf->GetTex(), "backbuffer texture");
-  SetDebugObjectName(s_backbuf->GetRTV(), "backbuffer render target view");
   return true;
 }
 
@@ -400,7 +395,6 @@ void Close()
 
   // release all bound resources
   context->ClearState();
-  SAFE_RELEASE(s_backbuf);
   SAFE_RELEASE(swapchain);
   SAFE_DELETE(stateman);
   context->Flush();  // immediately destroy device objects
@@ -454,10 +448,6 @@ const char* ComputeShaderVersionString()
     return "cs_4_0";
 }
 
-D3DTexture2D* GetBackBuffer()
-{
-  return s_backbuf;
-}
 bool BGRATexturesSupported()
 {
   return s_bgra_textures_supported;
@@ -490,8 +480,6 @@ u32 GetMaxTextureSize(D3D_FEATURE_LEVEL feature_level)
 
 void Reset(HWND new_wnd)
 {
-  SAFE_RELEASE(s_backbuf);
-
   if (swapchain)
   {
     if (GetFullscreenState())
@@ -505,7 +493,6 @@ void Reset(HWND new_wnd)
 
 void ResizeSwapChain()
 {
-  SAFE_RELEASE(s_backbuf);
   swapchain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
   if (!CreateSwapChainTextures())
   {
